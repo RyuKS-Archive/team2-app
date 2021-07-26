@@ -88,12 +88,16 @@ public class HttpUtil {
         return null;
     }
 
-    public ContentValues openstack_getAuthToken() {
-        String OS_USERNAME = "admin";
-        String OS_PASSWORD = "qhrwl4857!";
-        String OS_PROJECT_NAME = "admin";
-        String OS_USER_DOMAIN_NAME = "Default";
-        String OS_PROJECT_DOMAIN_NAME = "Default";
+    public ContentValues openstack_getAuthToken(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_USERNAME = values.get("OS_USERNAME").toString();
+        String OS_PASSWORD = values.get("OS_PASSWORD").toString();
+        String OS_PROJECT_NAME = values.get("OS_PROJECT_NAME").toString();
+        String OS_USER_DOMAIN_NAME = values.get("OS_USER_DOMAIN_NAME").toString();
+        String OS_PROJECT_DOMAIN_NAME = values.get("OS_PROJECT_DOMAIN_NAME").toString();
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/auth/tokens?nocatalog";
         String OS_TOKEN = "";
 
@@ -109,8 +113,8 @@ public class HttpUtil {
         JSONObject domain_idnetity = new JSONObject();
         JSONObject scope = new JSONObject();
         JSONObject project = new JSONObject();
-        JSONObject domain_scope =new JSONObject();
-        JSONArray passwordArr =new JSONArray();
+        JSONObject domain_scope = new JSONObject();
+        JSONArray passwordArr = new JSONArray();
 
 
         Log.e("httputl", "getAuthToken START!");
@@ -123,10 +127,8 @@ public class HttpUtil {
 
             password.put("user", user);
 
-            //체크
             passwordArr.put("password");
             identity.put("methods", passwordArr);
-            //identity.put("methods", "password");
 
             identity.put("password", password);
 
@@ -312,27 +314,60 @@ public class HttpUtil {
         return null;
     }
 
-    public ContentValues openstack_createUser(String authToken) {
+    public ContentValues openstack_createUser(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String default_project_id = values.get("default_project_id").toString();
+        String domain_id = values.get("domain_id").toString();
+        boolean enabled = (boolean) values.get("enabled");
+        String protocol_id = values.get("protocol_id").toString();
+        String unique_id = values.get("unique_id").toString();
+        String idp_id = values.get("idp_id").toString();
+        String name = values.get("name").toString();
+        String password = values.get("password").toString();
+        String description = values.get("description").toString();
+        String email = values.get("email").toString();
+        boolean ignore_password_expiry = (boolean) values.get("ignore_password_expiry");
+        String OS_TOKEN = values.get("OS_TOKEN").toString();
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/users";
-        String OS_TOKEN = authToken;
+
 
         HttpURLConnection conn = null;
         ContentValues response = null;
 
-        JSONObject responseDate = null;
+        JSONObject responseData = null;
         JSONObject jsonObject = new JSONObject();
         JSONObject user = new JSONObject();
-        //JSONObject federated = new JSONObject();
-        //JSONObject protocols = new JSONObject();
-        //JSONObject options = new JSONObject();
-        //JSONArray protocolsAddr =new JSONArray();
+        JSONObject federated = new JSONObject();
+        JSONObject protocols = new JSONObject();
+        JSONObject options = new JSONObject();
+        JSONArray protocolsAddr = new JSONArray();
+        JSONArray federatedAddr = new JSONArray();
 
         Log.e("httputl", "create user START!");
         try {
-            user.put("enabled", true);
-            user.put("name", "test20");
-            user.put("password", "123qwe");
-            user.put("email", "dynamite_heaven@naver.com");
+            user.put("default_project_id", default_project_id);
+            user.put("domain_id", domain_id);
+            user.put("enabled", enabled);
+
+            protocols.put("protocol_id", protocol_id);
+            protocols.put("unique_id", unique_id);
+            protocolsAddr.put(protocols);
+
+            federated.put("idp_id", idp_id);
+            federated.put("protocols", protocolsAddr);
+            federatedAddr.put(federated);
+
+            user.put("federated", federatedAddr);
+            user.put("name", name);
+            user.put("password", password);
+            user.put("description", description);
+            user.put("email", email);
+
+            options.put("ignore_password_expiry", ignore_password_expiry);
+            user.put("options", options);
 
             jsonObject.put("user", user);
         } catch (JSONException e) {
@@ -368,6 +403,7 @@ public class HttpUtil {
         */
 
         try{
+
             URL url = new URL(OS_AUTH_URL);
             conn = (HttpURLConnection) url.openConnection();
 
@@ -375,7 +411,6 @@ public class HttpUtil {
             conn.setRequestProperty("Content-Type","application/json");
             conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
             Log.e("httputil","OS_TOKEN : "+ OS_TOKEN);
-
 
             String strJson = jsonObject.toString();
             Log.e("httputil","json : "+ strJson);

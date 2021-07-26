@@ -82,11 +82,39 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
             HttpUtil httputil = new HttpUtil();
 
             if (values.get("btnNum") == "1") {
-                response = httputil.openstack_getAuthToken();
+                ContentValues values = new ContentValues();
+
+                values.put("OS_USERNAME", "admin");
+                values.put("OS_PASSWORD", "qhrwl4857!");
+                values.put("OS_PROJECT_NAME", "admin");
+                values.put("OS_USER_DOMAIN_NAME", "Default");
+                values.put("OS_PROJECT_DOMAIN_NAME", "Default");
+
+                response = httputil.openstack_getAuthToken(values);
             } else if (values.get("btnNum") == "2") {
                 response = httputil.openstack_selectUser(OS_TOKEN);
             } else if (values.get("btnNum") == "3") {
-                response = httputil.openstack_createUser(OS_TOKEN);
+                ContentValues values = new ContentValues();
+
+                if (OS_TOKEN != null) {
+                    values.put("OS_TOKEN", OS_TOKEN);
+                } else {
+                    values.put("OS_TOKEN", "");
+                }
+
+                values.put("default_project_id", "");
+                values.put("domain_id", "");
+                values.put("enabled", true);
+                values.put("protocol_id", "");
+                values.put("unique_id", "");
+                values.put("idp_id", "");
+                values.put("name", "");
+                values.put("password", "");
+                values.put("description", "");
+                values.put("email", "");
+                values.put("ignore_password_expiry", true);
+
+                response = httputil.openstack_createUser(values);
             }
 
             return result;
@@ -104,6 +132,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                 authToken.setText("인증 토큰 : " + response.get("authToken"));
                 OS_TOKEN = response.get("authToken").toString();
             } else if (values.get("btnNum") == "2") {
+
+            } else if (values.get("btnNum") == "3") {
 
             }
 
