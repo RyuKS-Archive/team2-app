@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--　アップデート表示効果 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="false"
+    android:interpolator="@android:anim/linear_interpolator">
+
+    <alpha android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:duration="600"
+        android:repeatMode="reverse"
+        android:repeatCount="8"/>
+
+    <scale
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:duration="600"
+        android:fromXScale="1"
+        android:fromYScale="1"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.5"
+        android:toYScale="1.5"
+        android:repeatMode="reverse"
+        android:repeatCount="9">
+    </scale>
+</set>
