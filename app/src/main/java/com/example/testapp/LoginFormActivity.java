@@ -62,9 +62,9 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
             public void afterTextChanged(Editable s) {
                 tmpEmail = email.getText().toString().trim();
                 if(tmpEmail.matches(emailChk) && s.length() > 0){
-                    resultText.setText("Team 2 Bono");
+                    resultText.setText("");
                 } else {
-                    resultText.setText("이메일 형식이 아닙니다.");
+                    resultText.setText("이 값은 유효한 이메일 주소가 아닙니다");
                 }
             }
         });
@@ -107,7 +107,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                 Node textNode = nodelist.item(0).getChildNodes().item(0);
 
                 //Test Code
-                resultText.setText("value : " + textNode.getNodeValue());
+                //resultText.setText("value : " + textNode.getNodeValue());
 
                 tmpEmail = textNode.getNodeValue();
                 if (tmpEmail.equals("1")) {

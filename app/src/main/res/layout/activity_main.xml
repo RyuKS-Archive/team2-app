@@ -1,78 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#b87333"
-    tools:context=".MainActivity" >
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/progressLayout"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutTop"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:orientation="vertical">
+        android:visibility="visible"
+        android:background="#304FFE">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/welcomeMsg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="15dp"
-                android:paddingRight="3dp"
-                android:paddingLeft="8dp"
-                android:textSize="40dp"
-                android:textColor="@color/white"
-                android:background="#D2B48C"
-                android:text="Team2 : " />
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
+        <TextView
+            android:id="@+id/nameText4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="left"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:textColor="#FFFFFF"
+            android:text="ⓑ  ⓣ  ⓣ" />
 
-            <Button
-                android:id="@+id/oneBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="getAuthToken" />
-
-            <Button
-                android:id="@+id/twoBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="getUserList" />
-
-            <Button
-                android:id="@+id/threeBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="createUser" />
-
-            <TextView
-                android:id="@+id/expires_at"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="" />
-            <TextView
-                android:id="@+id/authToken"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Team_2_bono" />
-
-        </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutHead"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayoutTop"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_gravity="top"
+        android:background="#E1F5FE"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/infoText1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="left"
+            android:textSize="20dp"
+            android:textColor="#40C4FF"
+            android:text="name#" />
+
+        <TextView
+            android:id="@+id/infoText2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="left"
+            android:textSize="20dp"
+            android:textColor="#40C4FF"
+            android:text="email#" />
+
+        <TextView
+            android:id="@+id/infoText3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="left"
+            android:textSize="20dp"
+            android:textColor="#40C4FF"
+            android:text="expire_dt#" />
+
+        <TextView
+            android:id="@+id/infoText4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="25dp"
+            android:textSize="0dp"
+            android:textColor="#40C4FF"
+            android:text="" />
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutBody"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="25dp"
+            android:background="#000000"/>
+
+        <Button
+            android:id="@+id/oneBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_effect"
+            android:textColor="@color/white"
+            android:text="getAuthToken" />
+
+        <Button
+            android:id="@+id/twoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_effect"
+            android:textColor="@color/white"
+            android:text="getUserList" />
+
+        <Button
+            android:id="@+id/threeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_effect"
+            android:textColor="@color/white"
+            android:text="createUser" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutBottom"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/teamLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textSize="15dp"
+            android:text="Bono 2 Team" />
+
+    </LinearLayout>
+</RelativeLayout>

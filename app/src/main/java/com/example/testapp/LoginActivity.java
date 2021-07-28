@@ -139,7 +139,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                     gotoNextActivity(OsRegistActivity.class, user_info);
                 }
             } else {
-                resultText.setText("미인증 계정이거나 비밀번호가 올바르지 않습니다.");
+                resultText.setText("미인증 계정이거나 비밀번호가 올바르지 않습니다");
             }
         }
     }
@@ -180,7 +180,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                         EditText password = findViewById(R.id.password);
                         if (email.getText().toString().length() == 0 || password.getText().toString().length() == 0 ) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                            ab.setMessage("이메일과 비밀번호를 입력해 주세요.");
+                            ab.setMessage("이메일과 암호를 입력해 주세요.");
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
                             ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {

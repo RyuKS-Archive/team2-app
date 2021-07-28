@@ -1,51 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FF9999"
-    tools:context=".MainActivity" >
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/progressLayout"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutTop"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:orientation="vertical">
+        android:visibility="invisible"
+        android:background="#FFFFFF">
 
         <TextView
-            android:id="@+id/noticeMsg1"
+            android:id="@+id/nameText4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="해당 이메일로 본인 인증 메일이 발송되었습니다." />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="left"
+            android:textSize="0dp"
+            android:textColor="@color/black"
+            android:text="email" />
+
         <TextView
-            android:id="@+id/noticeMsg2"
+            android:id="@+id/nameText7"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="인증 메일 확인까지 2~3분 정도 소요될 수 있습니다." />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="left"
+            android:textSize="1dp"
+            android:background="@color/black"
+            android:text="" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutHead"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayoutTop"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="top"
+        android:visibility="visible"
+        android:gravity="center">
+
         <TextView
-            android:id="@+id/noticeMsg3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/nameText1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textSize="40dp"
             android:gravity="center"
-            android:text="본인 인증 후 로그인해 주세요." />
+            android:textColor="#40C4FF"
+            android:visibility="invisible"
+            android:text="● ● ● ● ●" />
+
+        <TextView
+            android:id="@+id/nameText2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textSize="40dp"
+            android:gravity="center"
+            android:textColor="#40C4FF"
+            android:text="ⓑ ⓣ ⓣ" />
+
+        <TextView
+            android:id="@+id/nameText3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textSize="40dp"
+            android:gravity="center"
+            android:textColor="#40C4FF"
+            android:text="● ● ●" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutBody"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/descriptText1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:textSize="45dp"
+            android:textColor="#2979FF"
+            android:gravity="center"
+            android:text="인증 메일 발송" />
+
+        <TextView
+            android:id="@+id/descriptText2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#2979FF"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:text="해당 이메일로 본인 인증 메일이 발송되었습니다" />
+
+        <TextView
+            android:id="@+id/descriptText3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#2979FF"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:text="인증 메일 확인까지 2~3분 정도 소요될 수 있습니다" />
+
+        <TextView
+            android:id="@+id/descriptText4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:textColor="#2979FF"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:text="본인 인증 후 로그인해 주세요" />
 
         <Button
             android:id="@+id/okBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:background="@color/purple_500"
-            android:text="확인" />
-
-        <TextView
-            android:id="@+id/resultText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Team 2 bono" />
+            android:textColor="@color/white"
+            android:background="@drawable/button_effect"
+            android:text="확인" />
 
     </LinearLayout>
-</FrameLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutBottom"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/teamLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:textSize="15dp"
+            android:text="Bono 2 Team" />
+
+    </LinearLayout>
+</RelativeLayout>

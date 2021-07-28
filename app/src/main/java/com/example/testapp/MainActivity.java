@@ -2,31 +2,16 @@ package com.example.testapp;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends ActivityHelper implements View.OnTouchListener {
     private String OS_TOKEN = null;
@@ -47,8 +32,11 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         twoBtn.setOnTouchListener(this);
         threeBtn.setOnTouchListener(this);
 
-        TextView welcomeMsg = findViewById(R.id.welcomeMsg);
-        welcomeMsg.setText("Team2 : " + values.get("name").toString());
+        TextView infoText1 = findViewById(R.id.infoText1);
+        TextView infoText2 = findViewById(R.id.infoText2);
+
+        infoText1.setText(values.get("name").toString() + "#");
+        infoText2.setText(values.get("email").toString()  + "#");
 
         // 인텐트 os데이터 가지고와서 계정 토큰 생성
 
@@ -112,10 +100,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
             //Test Code
 
             if (values.get("btnNum") == "1") {
-                TextView expires_at = findViewById(R.id.expires_at);
-                expires_at.setText("토 만료 기한 : " + response.get("expires_at"));
-                TextView authToken = findViewById(R.id.authToken);
-                authToken.setText("인증 토큰 : " + response.get("authToken"));
+                TextView infoText3 = findViewById(R.id.infoText3);
+                infoText3.setText("expire_dt# " + response.get("expires_at"));
+                //TextView authToken = findViewById(R.id.authToken);
+                //authToken.setText("인증 토큰 : " + response.get("authToken"));
                 OS_TOKEN = response.get("authToken").toString();
             } else if (values.get("btnNum") == "2") {
 
@@ -131,10 +119,11 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             switch (view.getId()) {
                 case R.id.oneBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 1
                      **********************/
+                    Button oneBtn = findViewById(R.id.oneBtn);
+
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
@@ -151,16 +140,17 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "1");
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;
                 case R.id.twoBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 2
                      **********************/
+                    Button twoBtn = findViewById(R.id.twoBtn);
+
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
@@ -180,16 +170,17 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "2");
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;
                 case R.id.threeBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 3
                      **********************/
+                    Button threeBtn = findViewById(R.id.threeBtn);
+
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
@@ -209,8 +200,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "3");
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;

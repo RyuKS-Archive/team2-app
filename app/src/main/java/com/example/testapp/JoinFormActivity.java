@@ -40,7 +40,6 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
          **********************/
         Button signUpBtn = findViewById(R.id.signUpBtn);
         EditText email = findViewById(R.id.email);
-        TextView resultText = findViewById(R.id.resultText);
 
         email.setText(values.get("email").toString());
         email.setEnabled(false);
@@ -85,7 +84,7 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
                 Node textNode = nodelist.item(0).getChildNodes().item(0);
 
                 //Test Code
-                resultText.setText("value : " + textNode.getNodeValue());
+                //resultText.setText("value : " + textNode.getNodeValue());
 
                 tmpResult = textNode.getNodeValue();
                 if (tmpResult.equals("1")) {
@@ -102,7 +101,7 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
 
                 gotoNextActivity(JoinActivity.class, values);
             } else {
-                //resultText.setText("value : " + tmpResult);
+                resultText.setTextColor(500186);
                 resultText.setText("정상적으로 계정 생성을 완료하지 못습니다. 관리자에게 문의하여 주세요.");
             }
         }
