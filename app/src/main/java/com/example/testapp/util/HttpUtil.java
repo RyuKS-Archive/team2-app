@@ -75,6 +75,8 @@ public class HttpUtil {
                 result += line;
             }
 
+            Log.e("httputil", result);
+
             return result;
         } catch (MalformedURLException e) {
             e.printStackTrace();

@@ -2,11 +2,8 @@ package com.example.testapp;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -23,17 +20,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class LoginActivity extends ActivityHelper implements View.OnTouchListener {
-    private boolean networkEnabled = false;
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_login);
         Intent intent = getIntent();
+        ContentValues values = (ContentValues) intent.getExtras().get("DATA");
 
         /**********************
          * 뷰 선언
@@ -41,27 +37,11 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
         Button loginBtn = findViewById(R.id.loginBtn);
         EditText email = findViewById(R.id.email);
 
-        String emailStr = intent.getExtras().getString("email");
-
-        email.setText(emailStr);
+        email.setText(values.get("email").toString());
         email.setEnabled(false);
 
         loginBtn.setOnTouchListener(this);
 
-        /**********************
-         * 인터넷 연결 체크
-         **********************/
-        ConnectivityManager connectManager;
-        NetworkInfo mobile;
-        NetworkInfo wifi;
-
-        connectManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        mobile = connectManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        wifi = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if ((mobile != null && mobile.isConnected()) || (wifi != null && wifi.isConnected())) {
-            networkEnabled = true;
-        }
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
@@ -86,9 +66,14 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
             super.onPostExecute(result);
             EditText email = findViewById(R.id.email);
             TextView resultText = findViewById(R.id.resultText);
-            //resultText.setText(result);
 
             String chk_flg = "";
+            String password = "";
+            String name = "";
+            String os_use_flg = "";
+            String os_project_name = "";
+            String os_user_domain_name = "";
+            String os_project_domain_name = "";
             boolean isFlg = false;
 
             try {
@@ -97,23 +82,62 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                 Document document = builder.parse(new InputSource(new StringReader(result)));
 
                 NodeList nodelist = document.getElementsByTagName("result");
-                Node textNode = nodelist.item(0).getChildNodes().item(0);
+                Node result_node = nodelist.item(0).getChildNodes().item(0);
 
-                //Test Code
-                //resultText.setText("value : " + textNode.getNodeValue());
+                nodelist = document.getElementsByTagName("password");
+                Node password_node = nodelist.item(0).getChildNodes().item(0);
+                nodelist = document.getElementsByTagName("name");
+                Node name_node = nodelist.item(0).getChildNodes().item(0);
+                nodelist = document.getElementsByTagName("os_use_flg");
+                Node os_use_flg_node = nodelist.item(0).getChildNodes().item(0);
+                nodelist = document.getElementsByTagName("os_project_name");
+                Node os_project_name_node = nodelist.item(0).getChildNodes().item(0);
+                nodelist = document.getElementsByTagName("os_user_domain_name");
+                Node os_user_domain_name_node = nodelist.item(0).getChildNodes().item(0);
+                nodelist = document.getElementsByTagName("os_project_domain_name");
+                Node os_project_domain_name_node = nodelist.item(0).getChildNodes().item(0);
 
-                chk_flg = textNode.getNodeValue();
+                os_use_flg = os_use_flg_node.getNodeValue();
+                password = password_node.getNodeValue();
+                name = name_node.getNodeValue();
+
+                if (os_use_flg.equals("1")) {
+                    os_project_name = os_project_name_node.getNodeValue();
+                    os_user_domain_name = os_user_domain_name_node.getNodeValue();
+                    os_project_domain_name = os_project_domain_name_node.getNodeValue();
+                }
+
+                chk_flg = result_node.getNodeValue();
                 if (chk_flg.equals("1")) {
                     isFlg = true;
                 }
 
-                //resultText.setText("value : " + isFlg);
             } catch(Exception e) {
                 e.printStackTrace();
             }
 
             if (isFlg) {
-                gotoNextActivity(MainActivity.class, email.getText().toString());
+                if (os_use_flg.equals("1")) {
+                    ContentValues user_info = new ContentValues();
+                    user_info.put("email", email.getText().toString());
+                    user_info.put("password", password);
+                    user_info.put("name", name);
+                    user_info.put("os_project_name", os_project_name);
+                    user_info.put("os_user_domain_name", os_user_domain_name);
+                    user_info.put("os_project_domain_name", os_project_domain_name);
+
+                    gotoNextActivity(MainActivity.class, user_info);
+                } else {
+                    ContentValues user_info = new ContentValues();
+                    user_info.put("email", email.getText().toString());
+                    user_info.put("password", password);
+                    user_info.put("name", name);
+                    user_info.put("os_project_name", os_project_name);
+                    user_info.put("os_user_domain_name", os_user_domain_name);
+                    user_info.put("os_project_domain_name", os_project_domain_name);
+
+                    gotoNextActivity(OsRegistActivity.class, user_info);
+                }
             } else {
                 resultText.setText("미인증 계정이거나 비밀번호가 올바르지 않습니다.");
             }
@@ -130,11 +154,10 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             switch (view.getId()) {
                 case R.id.loginBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 다음 버튼
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);

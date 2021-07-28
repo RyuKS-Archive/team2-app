@@ -2,6 +2,7 @@ package com.example.testapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -114,8 +115,44 @@ public abstract class ActivityHelper extends FragmentActivity {
         overridePendingTransition(R.anim.default_end_enter, R.anim.default_end_exit);
     }
 
+    //public void gotoNextActivity(Class<?> nextClass, Object ...objs) {
+    //    gotoActivity(true, nextClass, objs);
+    //}
+
     public void gotoNextActivity(Class<?> nextClass, Object ...objs) {
         gotoActivity(true, nextClass, objs);
+    }
+
+    private void gotoActivity(boolean isNextActivity, Class<?> nextClass, Object ...objs) {
+        try {
+            Intent intent = new Intent(getApplication(), nextClass);
+
+            for (Object obj : objs) {
+                if (obj instanceof ContentValues) {
+                    intent.putExtra("DATA", ((ContentValues) obj));
+                }
+            }
+
+            startActivity(intent);
+
+            if (isNextActivity) {
+                overridePendingTransition(R.anim.default_start_enter, R.anim.default_start_exit);
+            }
+
+            if (nextClass.equals(MainActivity.class)) {
+                for (WeakReference<Activity> activity : activityStack) {
+                    activity.get().finish();
+                }
+                finish();
+                activityStack = new ArrayList<WeakReference<Activity>>();
+
+            } else {
+                activityStack.add(new WeakReference<Activity>(this));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String checkStr(String str) {
@@ -139,6 +176,7 @@ public abstract class ActivityHelper extends FragmentActivity {
         return isEnableNetwork;
     }
 
+    /*
     private void gotoActivity(boolean isNextActivity, Class<?> nextClass, Object ...objs) {
         try {
             Intent intent = new Intent(getApplication(), nextClass);
@@ -150,13 +188,12 @@ public abstract class ActivityHelper extends FragmentActivity {
                 //}
             }
 
-            /*
+
             for (Object obj : objs) {
                 if (obj instanceof HashMap) {
                     intent.putExtra("DATA", ((HashMap) obj));
                 }
             }
-             */
 
             startActivity(intent);
 
@@ -179,6 +216,7 @@ public abstract class ActivityHelper extends FragmentActivity {
             e.printStackTrace();
         }
     }
+    */
 
     private void createConfirmMsg(final MessageBean bean) {
         AlertDialog.Builder ab = new AlertDialog.Builder(this);

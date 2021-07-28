@@ -26,21 +26,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class JoinActivity extends ActivityHelper implements View.OnTouchListener {
-    private boolean networkEnabled = false;
-
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_join);
         Intent intent = getIntent();
-        String emailStr = intent.getExtras().getString("email");
+        ContentValues values = (ContentValues) intent.getExtras().get("DATA");
 
         Button okBtn = findViewById(R.id.okBtn);
 
         okBtn.setOnTouchListener(this);
-
-        //sendmail
-        ContentValues values = new ContentValues();
-        values.put("email", emailStr);
 
         NetworkTask networkTask = new NetworkTask(values);
         networkTask.execute();
@@ -85,9 +79,9 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
                      * 1
                      **********************/
                     Intent intent = getIntent();
-                    String emailStr = intent.getExtras().getString("email");
+                    ContentValues values = (ContentValues) intent.getExtras().get("DATA");
 
-                    gotoNextActivity(LoginActivity.class, emailStr);
+                    gotoNextActivity(LoginActivity.class, values);
                     break;
 
                 default:

@@ -32,7 +32,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class LoginFormActivity extends ActivityHelper implements OnTouchListener {
-    private boolean networkEnabled = false;
     private String emailChk = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private String tmpEmail = "";
 
@@ -71,20 +70,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
         });
         loginBtn.setOnTouchListener(this);
 
-        /**********************
-         * 인터넷 연결 체크
-         **********************/
-        ConnectivityManager connectManager;
-        NetworkInfo mobile;
-        NetworkInfo wifi;
-
-        connectManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        mobile = connectManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        wifi = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if ((mobile != null && mobile.isConnected()) || (wifi != null && wifi.isConnected())) {
-            networkEnabled = true;
-        }
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
@@ -134,9 +119,9 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
             }
 
             if (isEmail) {
-                gotoNextActivity(LoginActivity.class, email.getText().toString());
+                gotoNextActivity(LoginActivity.class, values);
             } else {
-                gotoNextActivity(JoinFormActivity.class, email.getText().toString());
+                gotoNextActivity(JoinFormActivity.class, values);
                 //test code 0720
                 //gotoNextActivity(MainActivity.class, email.getText().toString());
             }
@@ -157,7 +142,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                     /**********************
                      * 다음 버튼
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
@@ -169,16 +154,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                         });
                         ab.show();
 
-                        // TEST LINE
-                        //HashMap map = new HashMap();
-                        //map.put("email", "test@test.com");
-                        /*
-                        if (true) {
-                            gotoNextActivity(LoginActivity.class);
-                        } else {
-                            gotoNextActivity(JoinFormActivity.class);
-                        }
-                        */
                     } else {
                         /**********************
                          * email 등록 여부 체크
@@ -187,7 +162,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
 
                         if (email.getText().toString().length() == 0 || !email.getText().toString().matches(emailChk)) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                            ab.setMessage("이메일 형식이 올바르지 않습니다.");
+                            ab.setMessage("이메일을 다시 입력해 주세요.");
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
                             ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {

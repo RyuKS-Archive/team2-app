@@ -29,12 +29,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends ActivityHelper implements View.OnTouchListener {
-    private boolean networkEnabled = false;
     private String OS_TOKEN = null;
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
+        ContentValues values = (ContentValues) intent.getExtras().get("DATA");
 
         /**********************
          * 뷰 선언
@@ -46,26 +46,12 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         oneBtn.setOnTouchListener(this);
         twoBtn.setOnTouchListener(this);
         threeBtn.setOnTouchListener(this);
-        
-        String emailStr = intent.getExtras().getString("email");
 
         TextView welcomeMsg = findViewById(R.id.welcomeMsg);
-        welcomeMsg.setText("Team2 : " + emailStr);
+        welcomeMsg.setText("Team2 : " + values.get("name").toString());
 
-        /**********************
-         * 인터넷 연결 체크
-         **********************/
-        ConnectivityManager connectManager;
-        NetworkInfo mobile;
-        NetworkInfo wifi;
+        // 인텐트 os데이터 가지고와서 계정 토큰 생성
 
-        connectManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        mobile = connectManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        wifi = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if ((mobile != null && mobile.isConnected()) || (wifi != null && wifi.isConnected())) {
-            networkEnabled = true;
-        }
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
@@ -149,7 +135,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     /**********************
                      * 1
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
@@ -162,9 +148,6 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ab.show();
 
                     } else {
-                        Intent intent = getIntent();
-                        String emailStr = intent.getExtras().getString("email");
-
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "1");
 
@@ -178,7 +161,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     /**********************
                      * 2
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
@@ -207,7 +190,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     /**********************
                      * 3
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);

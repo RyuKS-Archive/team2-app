@@ -29,12 +29,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class JoinFormActivity extends ActivityHelper implements View.OnTouchListener {
-    private boolean networkEnabled = false;
-
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_join_form);
         Intent intent = getIntent();
+        ContentValues values = (ContentValues) intent.getExtras().get("DATA");
 
         /**********************
          * 뷰 선언
@@ -43,30 +42,11 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
         EditText email = findViewById(R.id.email);
         TextView resultText = findViewById(R.id.resultText);
 
-
-        String emailStr = intent.getExtras().getString("email");
-
-        email.setText(emailStr);
+        email.setText(values.get("email").toString());
         email.setEnabled(false);
 
         signUpBtn.setOnTouchListener(this);
 
-        /**********************
-         * 인터넷 연결 체크
-         **********************/
-        ConnectivityManager connectManager;
-        NetworkInfo mobile;
-        NetworkInfo wifi;
-
-        connectManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        mobile = connectManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        wifi = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if ((mobile != null && mobile.isConnected()) || (wifi != null && wifi.isConnected())) {
-            networkEnabled = true;
-        }
-
-        resultText.setText("network : " + networkEnabled);
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
@@ -117,7 +97,10 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
             }
 
             if (isUdt) {
-                gotoNextActivity(JoinActivity.class, email.getText().toString());
+                ContentValues values = new ContentValues();
+                values.put("email", email.getText().toString());
+
+                gotoNextActivity(JoinActivity.class, values);
             } else {
                 //resultText.setText("value : " + tmpResult);
                 resultText.setText("정상적으로 계정 생성을 완료하지 못습니다. 관리자에게 문의하여 주세요.");
@@ -139,7 +122,7 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
                     /**********************
                      * 계정 생성 버튼
                      **********************/
-                    if (!networkEnabled) {
+                    if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
                         ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
