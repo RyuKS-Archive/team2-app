@@ -6,16 +6,21 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayoutTop"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:visibility="visible">
+        >
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp">
+        </View>
 
         <TextView
             android:id="@+id/backText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_gravity="left"
             android:textSize="20dp"
@@ -38,10 +43,7 @@
             android:id="@+id/nameText1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:textSize="40dp"
-            android:gravity="center"
             android:textColor="#40C4FF"
             android:visibility="invisible"
             android:text="● ● ● ● ●" />
@@ -50,10 +52,7 @@
             android:id="@+id/nameText2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:textSize="40dp"
-            android:gravity="center"
             android:textColor="#40C4FF"
             android:text="ⓑ ⓣ ⓣ" />
 
@@ -61,10 +60,7 @@
             android:id="@+id/nameText3"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:textSize="40dp"
-            android:gravity="center"
             android:textColor="#40C4FF"
             android:text="● ● ●" />
 
@@ -78,7 +74,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_below="@id/linearLayoutHead"
-        android:layout_gravity="center">
+        android:gravity="center">
 
         <TextView
             android:id="@+id/descriptText1"
@@ -124,11 +120,10 @@
 
         <TextView
             android:id="@+id/resultText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:textColor="#2979FF"
-            android:gravity="center"
             android:text="환영합니다" />
 
         <Button
@@ -146,14 +141,14 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/teamLogo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:gravity="center"
             android:textSize="15dp"
             android:text="@string/team_logo" />
 
