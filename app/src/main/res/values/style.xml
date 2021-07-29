@@ -4,5 +4,4 @@
         <item name="android:text">Team 2 Bono</item>
         <item name="android:background">@color/design_default_color_primary</item>
     </style>
-
 </resources>

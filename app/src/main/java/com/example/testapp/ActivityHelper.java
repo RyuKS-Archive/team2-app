@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -23,9 +24,6 @@ import java.util.ArrayList;
 public abstract class ActivityHelper extends FragmentActivity {
     protected Context context = null;
     protected BackPressCloseController backPress = new BackPressCloseController(this);
-
-    protected static final int REQUEST_ENABLE_BT = 3;
-    protected static final int REQUEST_CONNECT_DEVICE = 1;
 
     static protected ArrayList<WeakReference<Activity>> activityStack = new ArrayList<WeakReference<Activity>>();
 
@@ -53,7 +51,7 @@ public abstract class ActivityHelper extends FragmentActivity {
             activityStart(savedInstanceState);
 
         } catch (Exception e) {
-            //LogUtil.e(checkStr(e.getMessage()), e);
+            Log.e("ActivityHelper", checkStr(e.getMessage()));
         }
     };
 
@@ -115,10 +113,6 @@ public abstract class ActivityHelper extends FragmentActivity {
         overridePendingTransition(R.anim.default_end_enter, R.anim.default_end_exit);
     }
 
-    //public void gotoNextActivity(Class<?> nextClass, Object ...objs) {
-    //    gotoActivity(true, nextClass, objs);
-    //}
-
     public void gotoNextActivity(Class<?> nextClass, Object ...objs) {
         gotoActivity(true, nextClass, objs);
     }
@@ -145,10 +139,8 @@ public abstract class ActivityHelper extends FragmentActivity {
                 }
                 finish();
                 activityStack = new ArrayList<WeakReference<Activity>>();
-
             } else {
                 activityStack.add(new WeakReference<Activity>(this));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,48 +167,6 @@ public abstract class ActivityHelper extends FragmentActivity {
 
         return isEnableNetwork;
     }
-
-    /*
-    private void gotoActivity(boolean isNextActivity, Class<?> nextClass, Object ...objs) {
-        try {
-            Intent intent = new Intent(getApplication(), nextClass);
-
-            //int tmpCnt = 0;
-            for (Object obj : objs) {
-                //if (obj instanceof String) {
-                    intent.putExtra("email", (String) obj);
-                //}
-            }
-
-
-            for (Object obj : objs) {
-                if (obj instanceof HashMap) {
-                    intent.putExtra("DATA", ((HashMap) obj));
-                }
-            }
-
-            startActivity(intent);
-
-            if (isNextActivity) {
-                overridePendingTransition(R.anim.default_start_enter, R.anim.default_start_exit);
-            }
-
-            if (nextClass.equals(MainActivity.class)) {
-                for (WeakReference<Activity> activity : activityStack) {
-                    activity.get().finish();
-                }
-                finish();
-                activityStack = new ArrayList<WeakReference<Activity>>();
-
-            } else {
-                activityStack.add(new WeakReference<Activity>(this));
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
     private void createConfirmMsg(final MessageBean bean) {
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
@@ -262,7 +212,6 @@ public abstract class ActivityHelper extends FragmentActivity {
         public void onBackPressed() {
             if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
                 backKeyPressedTime = System.currentTimeMillis();
-                //System.out.println(System.currentTimeMillis() + "::" + backKeyPressedTime);
                 showGuide();
                 return;
             }
@@ -273,7 +222,6 @@ public abstract class ActivityHelper extends FragmentActivity {
 
                 activity.finish();
                 toast.cancel();
-                //LogUtil.i("프로그램 종료");
             }
         }
 

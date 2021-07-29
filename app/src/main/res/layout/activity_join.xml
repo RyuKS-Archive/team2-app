@@ -136,7 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:background="@drawable/button_effect"
+            android:background="@drawable/ripple_effect"
             android:text="확인" />
 
     </LinearLayout>
@@ -155,7 +155,7 @@
             android:layout_marginBottom="5dp"
             android:gravity="center"
             android:textSize="15dp"
-            android:text="Bono 2 Team" />
+            android:text="@string/team_logo" />
 
     </LinearLayout>
 </RelativeLayout>

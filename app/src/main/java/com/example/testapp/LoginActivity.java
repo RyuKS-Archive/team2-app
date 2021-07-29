@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -36,16 +37,25 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
          **********************/
         Button loginBtn = findViewById(R.id.loginBtn);
         EditText email = findViewById(R.id.email);
+        TextView backText = findViewById(R.id.backText);
 
         email.setText(values.get("email").toString());
         email.setEnabled(false);
 
         loginBtn.setOnTouchListener(this);
 
+        backText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backText.setPaintFlags(backText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                gotoPrevActivity();
+            }
+        });
+
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-        private String url = "http://210.216.61.151:12013/chk_login.jsp";
+        private String url = getString(R.string.chk_login);
         private ContentValues values;
 
         public NetworkTask(ContentValues values) {
@@ -139,7 +149,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                     gotoNextActivity(OsRegistActivity.class, user_info);
                 }
             } else {
-                resultText.setText("미인증 계정이거나 비밀번호가 올바르지 않습니다");
+                resultText.setText(R.string.deny_login_alert_msg);
             }
         }
     }
@@ -159,10 +169,10 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                      **********************/
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -180,10 +190,10 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                         EditText password = findViewById(R.id.password);
                         if (email.getText().toString().length() == 0 || password.getText().toString().length() == 0 ) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                            ab.setMessage("이메일과 암호를 입력해 주세요.");
+                            ab.setMessage(R.string.chk_input_pw_msg);
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
-                            ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                 }
@@ -199,7 +209,6 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                         }
                     }
                     break;
-
                 default:
                     ;
             }

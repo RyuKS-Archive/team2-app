@@ -2,10 +2,7 @@ package com.example.testapp;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,13 +17,11 @@ import android.widget.TextView;
 import com.example.testapp.util.HttpUtil;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,7 +33,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_login_form);
-
 
         /**********************
          * 뷰 선언
@@ -64,7 +58,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                 if(tmpEmail.matches(emailChk) && s.length() > 0){
                     resultText.setText("");
                 } else {
-                    resultText.setText("이 값은 유효한 이메일 주소가 아닙니다");
+                    resultText.setText(R.string.email_format_alert_msg);
                 }
             }
         });
@@ -73,7 +67,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-        private String url = "http://210.216.61.151:12013/chk_email.jsp";
+        private String url = getString(R.string.chk_email);
         private ContentValues values;
 
         public NetworkTask(ContentValues values) {
@@ -92,9 +86,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            //Test Code
-            EditText email = findViewById(R.id.email);
-            TextView resultText = findViewById(R.id.resultText);
             String tmpEmail = "";
             boolean isEmail = false;
 
@@ -105,9 +96,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
 
                 NodeList nodelist = document.getElementsByTagName("result");
                 Node textNode = nodelist.item(0).getChildNodes().item(0);
-
-                //Test Code
-                //resultText.setText("value : " + textNode.getNodeValue());
 
                 tmpEmail = textNode.getNodeValue();
                 if (tmpEmail.equals("1")) {
@@ -122,8 +110,6 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                 gotoNextActivity(LoginActivity.class, values);
             } else {
                 gotoNextActivity(JoinFormActivity.class, values);
-                //test code 0720
-                //gotoNextActivity(MainActivity.class, email.getText().toString());
             }
         }
     }
@@ -138,16 +124,15 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             switch (view.getId()) {
                 case R.id.nextBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 다음 버튼
                      **********************/
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -162,10 +147,10 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
 
                         if (email.getText().toString().length() == 0 || !email.getText().toString().matches(emailChk)) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                            ab.setMessage("이메일을 다시 입력해 주세요.");
+                            ab.setMessage(R.string.email_format_chk_msg);
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
-                            ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                 }

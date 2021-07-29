@@ -126,10 +126,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -153,10 +153,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
@@ -183,10 +183,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }

@@ -1,29 +1,14 @@
 package com.example.testapp;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 public class JoinActivity extends ActivityHelper implements View.OnTouchListener {
     @Override
@@ -46,7 +31,7 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-        private String url = "http://210.216.61.151:12013/send_mail.jsp";
+        private String url = getString(R.string.send_mail);
         private ContentValues values;
 
         public NetworkTask(ContentValues values) {
@@ -74,7 +59,6 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             switch (view.getId()) {
                 case R.id.okBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 1
                      **********************/

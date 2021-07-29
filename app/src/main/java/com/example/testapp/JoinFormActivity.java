@@ -2,11 +2,9 @@ package com.example.testapp;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -23,7 +21,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,16 +37,25 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
          **********************/
         Button signUpBtn = findViewById(R.id.signUpBtn);
         EditText email = findViewById(R.id.email);
+        TextView backText = findViewById(R.id.backText);
 
         email.setText(values.get("email").toString());
         email.setEnabled(false);
 
         signUpBtn.setOnTouchListener(this);
 
+        backText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backText.setPaintFlags(backText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                gotoPrevActivity();
+            }
+        });
+
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-        private String url = "http://210.216.61.151:12013/join.jsp";
+        private String url = getString(R.string.join);
         private ContentValues values;
 
         public NetworkTask(ContentValues values) {
@@ -73,7 +79,6 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
 
             EditText email = findViewById(R.id.email);
             TextView resultText = findViewById(R.id.resultText);
-            //resultText.setText(result);
 
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -82,9 +87,6 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
 
                 NodeList nodelist = document.getElementsByTagName("result");
                 Node textNode = nodelist.item(0).getChildNodes().item(0);
-
-                //Test Code
-                //resultText.setText("value : " + textNode.getNodeValue());
 
                 tmpResult = textNode.getNodeValue();
                 if (tmpResult.equals("1")) {
@@ -102,7 +104,7 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
                 gotoNextActivity(JoinActivity.class, values);
             } else {
                 resultText.setTextColor(500186);
-                resultText.setText("정상적으로 계정 생성을 완료하지 못습니다. 관리자에게 문의하여 주세요.");
+                resultText.setText(R.string.err_join_msg);
             }
         }
     }
@@ -117,24 +119,21 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             switch (view.getId()) {
                 case R.id.signUpBtn:
-                    //LogUtil.d("Next button");
                     /**********************
                      * 계정 생성 버튼
                      **********************/
                     if (!networkCheck()) {
                         AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                        ab.setMessage("네트워크 연결 상태를 확인해 주세요.");
+                        ab.setMessage(R.string.network_enable_alert_msg);
                         ab.setIcon(android.R.drawable.ic_dialog_alert);
                         ab.setCancelable(false);
-                        ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                             }
                         });
                         ab.show();
 
-                        //TEST LINE
-                        gotoNextActivity(JoinActivity.class);
                     } else {
                         /**********************
                          * 로그인 체크
@@ -145,10 +144,10 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
 
                         if (email.getText().toString().length() == 0 || password.getText().toString().length() == 0 || name.getText().toString().length() == 0) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-                            ab.setMessage("필수 입력란을 모두 입력해 주세요.");
+                            ab.setMessage(R.string.chk_input_msg);
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
-                            ab.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                 }
@@ -165,7 +164,6 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
                         }
                     }
                     break;
-
                 default:
                     ;
             }
