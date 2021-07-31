@@ -33,6 +33,7 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private String url = getString(R.string.send_mail);
         private ContentValues values;
+        private ContentValues response;
 
         public NetworkTask(ContentValues values) {
             this.values = values;
@@ -40,11 +41,11 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
 
         @Override
         protected String doInBackground(Void... params) {
-            String result;
-            HttpUtil httputil = new HttpUtil();
-            result = httputil.request(url, values);
+            //String result;
+            HttpUtil httputil = new HttpUtil(url, "POST");
+            response = httputil.request(values);
 
-            return result;
+            return null;
         }
 
         @Override

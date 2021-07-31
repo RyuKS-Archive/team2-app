@@ -19,9 +19,25 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpUtil {
+    private String pageUrl = "";
+    private String httpMethod;
+    private final int HTTP_ERR = 400;
+
+    public HttpUtil() {
+        this.httpMethod = "POST";
+    }
+
+    public HttpUtil(String pageUrl, String httpMethod) {
+        this.pageUrl = pageUrl;
+        this.httpMethod = httpMethod;
+    }
+
+    /*
     public String request (String _url, ContentValues params) {
         HttpURLConnection conn = null;
         StringBuffer sbParams = new StringBuffer();
+
+        boolean isOutput = params != null ? true : false;
 
         if (params == null) {
             sbParams.append("");
@@ -55,6 +71,7 @@ public class HttpUtil {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Accept-Charset", "UTF-8");
             conn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
+            //conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
 
             String strParams = sbParams.toString();
             OutputStream os = conn.getOutputStream();
@@ -75,9 +92,107 @@ public class HttpUtil {
                 result += line;
             }
 
-            Log.e("httputil", result);
 
-            return result;
+       // BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        //StringBuilder result = new StringBuilder();
+        //String line = "";
+         //       while ((line = reader.readLine()) != null) {
+           // result.append(line);
+        //}
+
+          //      Log.e("httputil", result.toString());
+
+         //   return result.toString();
+        } catch (MalformedURLException e) {
+        e.printStackTrace();
+        } catch (IOException e) {
+        e.printStackTrace();
+        } finally {
+        if (conn != null)
+        conn.disconnect();
+        }
+
+        return null;
+        }
+     */
+
+    public ContentValues request (ContentValues params) {
+        HttpURLConnection conn = null;
+        StringBuffer sbParams = new StringBuffer();
+        int responseCode = 0;
+
+        boolean isOutput = params != null ? true : false;
+
+        if (isOutput) {
+            boolean isAnd = false;
+            String key;
+            String value;
+
+            for (Map.Entry<String, Object> parameter : params.valueSet()) {
+                key = parameter.getKey();
+                value = parameter.getValue().toString();
+
+                if(isAnd) {
+                    sbParams.append("&");
+                }
+
+                sbParams.append(key).append("=").append(value);
+
+                if (!isAnd) {
+                    if (params.size() >= 2) {
+                        isAnd = true;
+                    }
+                }
+            }
+        } else {
+            sbParams.append("");
+        }
+
+        Log.e("HttpUtil", "request start pageUrl : " + pageUrl + " httpMethod : " + httpMethod);
+        try {
+            URL url = new URL(pageUrl);
+            conn = (HttpURLConnection) url.openConnection();
+
+            //set Header
+            conn.setRequestMethod(httpMethod);
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setDoOutput(isOutput);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setConnectTimeout(6000);
+
+            if (isOutput) {
+                String strParams = sbParams.toString();
+                OutputStream os = conn.getOutputStream();
+                os.write(strParams.getBytes("UTF-8"));
+                os.flush();
+                os.close();
+            }
+
+            BufferedReader reader = null;
+            responseCode = conn.getResponseCode();
+            //if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (responseCode >= HTTP_ERR) {
+                Log.e("HttpUtil", "response code : " + responseCode);
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            }
+
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            Log.e("httputil", result.toString());
+
+            ContentValues response = new ContentValues();
+            response.put("code", responseCode);
+            response.put("result", result.toString());
+
+            return response;
+            //return result.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

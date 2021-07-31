@@ -57,6 +57,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private String url = getString(R.string.chk_login);
         private ContentValues values;
+        private ContentValues response;
 
         public NetworkTask(ContentValues values) {
             this.values = values;
@@ -64,11 +65,11 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
 
         @Override
         protected String doInBackground(Void... params) {
-            String result;
-            HttpUtil httputil = new HttpUtil();
-            result = httputil.request(url, values);
+            //String result;
+            HttpUtil httputil = new HttpUtil(url, "GET");
+            response = httputil.request(values);
 
-            return result;
+            return null;
         }
 
         @Override

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,6 +31,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class LoginFormActivity extends ActivityHelper implements OnTouchListener {
     private String emailChk = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private String tmpEmail = "";
+    private final int HTTP_OK = 200;
+    private final int E0001 = 400;
 
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
@@ -69,6 +73,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private String url = getString(R.string.chk_email);
         private ContentValues values;
+        private ContentValues response;
 
         public NetworkTask(ContentValues values) {
             this.values = values;
@@ -76,41 +81,34 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
 
         @Override
         protected String doInBackground(Void... params) {
-            String result;
-            HttpUtil httputil = new HttpUtil();
-            result = httputil.request(url, values);
+            String getUrl = url + "?email=" + values.get("email");
+            HttpUtil httputil = new HttpUtil(getUrl, "GET");
+            response = httputil.request(null);
 
-            return result;
+            return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String tmpEmail = "";
-            boolean isEmail = false;
 
+            if (response.getAsInteger("code") == HTTP_OK) {
+                gotoNextActivity(LoginActivity.class, values);
+            } else if (response.getAsInteger("code") == E0001) {
+                gotoNextActivity(JoinFormActivity.class, values);
+            } else {
+                //runtime error
+            }
+
+            /*
             try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new InputSource(new StringReader(result)));
-
-                NodeList nodelist = document.getElementsByTagName("result");
-                Node textNode = nodelist.item(0).getChildNodes().item(0);
-
-                tmpEmail = textNode.getNodeValue();
-                if (tmpEmail.equals("1")) {
-                    isEmail = true;
-                }
+                //JSONObject resJson = new JSONObject(result);
+                //String email = resJson.getString("email");
 
             } catch(Exception e) {
                 e.printStackTrace();
             }
-
-            if (isEmail) {
-                gotoNextActivity(LoginActivity.class, values);
-            } else {
-                gotoNextActivity(JoinFormActivity.class, values);
-            }
+             */
         }
     }
 
