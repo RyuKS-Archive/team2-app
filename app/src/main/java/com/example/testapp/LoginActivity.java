@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,6 +27,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class LoginActivity extends ActivityHelper implements View.OnTouchListener {
+    private final int HTTP_OK = 200;
+    private final int E0001 = 400;
+
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_login);
@@ -65,9 +69,9 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
 
         @Override
         protected String doInBackground(Void... params) {
-            //String result;
-            HttpUtil httputil = new HttpUtil(url, "GET");
-            response = httputil.request(values);
+            String getUrl = url + "?email=" + values.get("email") + "&password=" + values.get("password");
+            HttpUtil httputil = new HttpUtil(getUrl, "GET");
+            response = httputil.request(null);
 
             return null;
         }
@@ -75,18 +79,57 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            EditText email = findViewById(R.id.email);
             TextView resultText = findViewById(R.id.resultText);
 
-            String chk_flg = "";
-            String password = "";
+            String email = "";
             String name = "";
-            String os_use_flg = "";
+            String password = "";
+            int chk_flg = 0;
+            int os_use_flg = 0;
             String os_project_name = "";
             String os_user_domain_name = "";
             String os_project_domain_name = "";
-            boolean isFlg = false;
 
+            if (response.getAsInteger("code") == HTTP_OK) {
+                try {
+                    JSONObject resJson = new JSONObject(response.getAsString("result"));
+                    email = resJson.getString("email");
+                    name = resJson.getString("name");
+                    password = resJson.getString("password");
+                    chk_flg = resJson.getInt("chk_flg");
+                    os_use_flg = resJson.getInt("os_use_flg");
+                    os_project_name = resJson.getString("os_project_name");
+                    os_user_domain_name = resJson.getString("os_user_domain_name");
+                    os_project_domain_name = resJson.getString("os_project_domain_name");
+                    //차후 optional
+
+                    if (chk_flg == 1) {
+                        ContentValues user_info = new ContentValues();
+                        user_info.put("email", email);
+                        user_info.put("password", password);
+                        user_info.put("name", name);
+                        user_info.put("os_project_name", os_project_name);
+                        user_info.put("os_user_domain_name", os_user_domain_name);
+                        user_info.put("os_project_domain_name", os_project_domain_name);
+
+                        if (os_use_flg == 1) {
+                            gotoNextActivity(MainActivity.class, user_info);
+                        } else {
+                            gotoNextActivity(OsRegistActivity.class, user_info);
+                        }
+                    } else {
+                        resultText.setText(R.string.deny_login_alert_msg);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (response.getAsInteger("code") == E0001) {
+                resultText.setText(R.string.deny_login_alert_msg);
+            } else {
+                resultText.setText(R.string.internal_server_error);
+            }
+
+            /*
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = factory.newDocumentBuilder();
@@ -152,6 +195,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
             } else {
                 resultText.setText(R.string.deny_login_alert_msg);
             }
+             */
         }
     }
 

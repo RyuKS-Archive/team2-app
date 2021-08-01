@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,6 +27,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class JoinFormActivity extends ActivityHelper implements View.OnTouchListener {
+    private final int HTTP_OK = 200;
+    private final int E0001 = 400;
+
     @Override
     public void activityStart(Bundle savedInstanceState) throws Exception {
         setContentView(R.layout.activity_join_form);
@@ -65,7 +69,6 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
 
         @Override
         protected String doInBackground(Void... params) {
-            //String result;
             HttpUtil httputil = new HttpUtil(url, "POST");
             response = httputil.request(values);
 
@@ -75,37 +78,33 @@ public class JoinFormActivity extends ActivityHelper implements View.OnTouchList
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String tmpResult = "";
             boolean isUdt = false;
 
             EditText email = findViewById(R.id.email);
             TextView resultText = findViewById(R.id.resultText);
 
-            try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new InputSource(new StringReader(result)));
+            if (response.getAsInteger("code") == HTTP_OK) {
+                try {
+                    JSONObject resJson = new JSONObject(response.getAsString("result"));
+                    isUdt = resJson.getBoolean("result");
 
-                NodeList nodelist = document.getElementsByTagName("result");
-                Node textNode = nodelist.item(0).getChildNodes().item(0);
+                    if (isUdt) {
+                        ContentValues values = new ContentValues();
+                        values.put("email", email.getText().toString());
 
-                tmpResult = textNode.getNodeValue();
-                if (tmpResult.equals("1")) {
-                    isUdt = true;
+                        gotoNextActivity(JoinActivity.class, values);
+                        finish();
+                    } else {
+                        resultText.setTextColor(500186);
+                        resultText.setText(R.string.err_join_msg);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
                 }
-
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-
-            if (isUdt) {
-                ContentValues values = new ContentValues();
-                values.put("email", email.getText().toString());
-
-                gotoNextActivity(JoinActivity.class, values);
-            } else {
-                resultText.setTextColor(500186);
+            } else if (response.getAsInteger("code") == E0001) {
                 resultText.setText(R.string.err_join_msg);
+            } else {
+                resultText.setText(R.string.internal_server_error);
             }
         }
     }

@@ -10,9 +10,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,120 +34,52 @@ public class HttpUtil {
         this.httpMethod = httpMethod;
     }
 
-    /*
-    public String request (String _url, ContentValues params) {
-        HttpURLConnection conn = null;
-        StringBuffer sbParams = new StringBuffer();
-
-        boolean isOutput = params != null ? true : false;
-
-        if (params == null) {
-            sbParams.append("");
-        } else {
-            boolean isAnd = false;
-            String key;
-            String value;
-
-            for (Map.Entry<String, Object> parameter : params.valueSet()) {
-                key = parameter.getKey();
-                value = parameter.getValue().toString();
-
-                if(isAnd) {
-                    sbParams.append("&");
-                }
-
-                sbParams.append(key).append("=").append(value);
-
-                if (!isAnd) {
-                    if (params.size() >= 2) {
-                        isAnd = true;
-                    }
-                }
-            }
-        }
-
-        try {
-            URL url = new URL(_url);
-            conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Accept-Charset", "UTF-8");
-            conn.setRequestProperty("Context_Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
-            //conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
-
-            String strParams = sbParams.toString();
-            OutputStream os = conn.getOutputStream();
-            os.write(strParams.getBytes("UTF-8"));
-            os.flush();
-            os.close();
-
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-            String line;
-            String result = "";
-
-            while ((line = reader.readLine()) != null) {
-                result += line;
-            }
-
-
-       // BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        //StringBuilder result = new StringBuilder();
-        //String line = "";
-         //       while ((line = reader.readLine()) != null) {
-           // result.append(line);
-        //}
-
-          //      Log.e("httputil", result.toString());
-
-         //   return result.toString();
-        } catch (MalformedURLException e) {
-        e.printStackTrace();
-        } catch (IOException e) {
-        e.printStackTrace();
-        } finally {
-        if (conn != null)
-        conn.disconnect();
-        }
-
-        return null;
-        }
-     */
-
     public ContentValues request (ContentValues params) {
         HttpURLConnection conn = null;
         StringBuffer sbParams = new StringBuffer();
+        //JSONObject sbParams = new JSONObject();
         int responseCode = 0;
 
         boolean isOutput = params != null ? true : false;
 
         if (isOutput) {
-            boolean isAnd = false;
+            boolean isFirst = true;
             String key;
             String value;
 
             for (Map.Entry<String, Object> parameter : params.valueSet()) {
+
                 key = parameter.getKey();
                 value = parameter.getValue().toString();
 
-                if(isAnd) {
+                Log.e("HttpUtil", "key : " + key + " vlaue : " + value);
+
+                /*
+                try {
+                    sbParams.put(key, value);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                 */
+
+
+                if (isFirst)
+                    isFirst = false;
+                else
                     sbParams.append("&");
+
+                try {
+                    sbParams.append(URLEncoder.encode(key, "UTF-8"));
+                    sbParams.append("=");
+                    sbParams.append(URLEncoder.encode(value, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
 
-                sbParams.append(key).append("=").append(value);
-
-                if (!isAnd) {
-                    if (params.size() >= 2) {
-                        isAnd = true;
-                    }
-                }
             }
         } else {
             sbParams.append("");
+            //sbParams = null;
         }
 
         Log.e("HttpUtil", "request start pageUrl : " + pageUrl + " httpMethod : " + httpMethod);
@@ -155,13 +89,16 @@ public class HttpUtil {
 
             //set Header
             conn.setRequestMethod(httpMethod);
-            conn.setRequestProperty("Content-Type","application/json");
+            //conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("Content_Type", "application/x-www-form-urlencoded;cahrset=UTF-8");
             conn.setDoOutput(isOutput);
             conn.setDoInput(true);
             conn.setUseCaches(false);
             conn.setConnectTimeout(6000);
 
             if (isOutput) {
+                Log.e("HttpUtil", "request params : " + sbParams.toString());
+
                 String strParams = sbParams.toString();
                 OutputStream os = conn.getOutputStream();
                 os.write(strParams.getBytes("UTF-8"));
@@ -185,7 +122,7 @@ public class HttpUtil {
                 result.append(line);
             }
 
-            Log.e("httputil", result.toString());
+            //Log.e("httputil", result.toString());
 
             ContentValues response = new ContentValues();
             response.put("code", responseCode);

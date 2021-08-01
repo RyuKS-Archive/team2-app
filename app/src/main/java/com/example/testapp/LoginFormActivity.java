@@ -95,9 +95,10 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
             if (response.getAsInteger("code") == HTTP_OK) {
                 gotoNextActivity(LoginActivity.class, values);
             } else if (response.getAsInteger("code") == E0001) {
+                //{"errorCode":"E0001","errorMessage":"No value present"}
                 gotoNextActivity(JoinFormActivity.class, values);
             } else {
-                //runtime error
+                //internal server error 500
             }
 
             /*

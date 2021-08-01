@@ -5,11 +5,13 @@
         Connect URL
 
     <string name="chk_email">http://210.216.61.151:12013/chk_email.jsp</string>
-    ==============================-->
-    <string name="chk_email">http://210.216.61.151:12080/user</string>
-
     <string name="chk_login">http://210.216.61.151:12013/chk_login.jsp</string>
     <string name="join">http://210.216.61.151:12013/join.jsp</string>
+    ==============================-->
+    <string name="chk_email">http://210.216.61.151:12080/user</string>
+    <string name="chk_login">http://210.216.61.151:12080/user/login</string>
+    <string name="join">http://210.216.61.151:12080/user/join</string>
+
     <string name="send_mail">http://210.216.61.151:12013/send_mail.jsp</string>
 
     <!--===========================
@@ -23,6 +25,7 @@
     <string name="team_logo">Bono 2 Team</string>
     <string name="network_enable_alert_msg">네트워크 연결 상태를 확인해 주세요</string>
     <string name="description_ok">확인</string>
+    <string name="internal_server_error">에러가 발생했습니다, 관리자에게 문의하여 주세요</string>
 
     <!--===========================
         SplashActivity
