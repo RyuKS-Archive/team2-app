@@ -21,8 +21,8 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
 
         okBtn.setOnTouchListener(this);
 
-        //NetworkTask networkTask = new NetworkTask(values);
-        //networkTask.execute();
+        NetworkTask networkTask = new NetworkTask(values);
+        networkTask.execute();
     }
 
     @Override
@@ -41,7 +41,6 @@ public class JoinActivity extends ActivityHelper implements View.OnTouchListener
 
         @Override
         protected String doInBackground(Void... params) {
-            //String result;
             HttpUtil httputil = new HttpUtil(url, "POST");
             response = httputil.request(values);
 
