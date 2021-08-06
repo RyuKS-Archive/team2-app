@@ -113,8 +113,8 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
                         ab.show();
 
                     } else {
-                        NetworkTask networkTask = new NetworkTask();
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask();
+                        //networkTask.execute();
                     }
                     break;
 
