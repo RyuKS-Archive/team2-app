@@ -140,8 +140,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "1");
 
-                        //NetworkTask networkTask = new NetworkTask(values);
-                        //networkTask.execute();
+                        NetworkTask networkTask = new NetworkTask(values);
+                        networkTask.execute();
                     }
 
                     break;
@@ -170,8 +170,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "2");
 
-                        //NetworkTask networkTask = new NetworkTask(values);
-                        //networkTask.execute();
+                        NetworkTask networkTask = new NetworkTask(values);
+                        networkTask.execute();
                     }
 
                     break;
@@ -200,8 +200,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "3");
 
-                        //NetworkTask networkTask = new NetworkTask(values);
-                        //networkTask.execute();
+                        NetworkTask networkTask = new NetworkTask(values);
+                        networkTask.execute();
                     }
 
                     break;

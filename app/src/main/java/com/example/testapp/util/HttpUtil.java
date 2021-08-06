@@ -122,7 +122,7 @@ public class HttpUtil {
                 result.append(line);
             }
 
-            //Log.e("httputil", result.toString());
+            Log.e("httputil", result.toString());
 
             ContentValues response = new ContentValues();
             response.put("code", responseCode);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -84,7 +85,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
             String email = "";
             String name = "";
             String password = "";
-            int chk_flg = 0;
+            int auth_flg = 0;
             int os_use_flg = 0;
             String os_project_name = "";
             String os_user_domain_name = "";
@@ -95,15 +96,14 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                     JSONObject resJson = new JSONObject(response.getAsString("result"));
                     email = resJson.getString("email");
                     name = resJson.getString("name");
-                    password = resJson.getString("password");
-                    chk_flg = resJson.getInt("chk_flg");
+                    auth_flg = resJson.getInt("auth_flg");
                     os_use_flg = resJson.getInt("os_use_flg");
                     os_project_name = resJson.getString("os_project_name");
                     os_user_domain_name = resJson.getString("os_user_domain_name");
                     os_project_domain_name = resJson.getString("os_project_domain_name");
                     //차후 optional
 
-                    if (chk_flg == 1) {
+                    if (auth_flg == 1) {
                         ContentValues user_info = new ContentValues();
                         user_info.put("email", email);
                         user_info.put("password", password);
@@ -128,74 +128,6 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
             } else {
                 resultText.setText(R.string.internal_server_error);
             }
-
-            /*
-            try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new InputSource(new StringReader(result)));
-
-                NodeList nodelist = document.getElementsByTagName("result");
-                Node result_node = nodelist.item(0).getChildNodes().item(0);
-
-                nodelist = document.getElementsByTagName("password");
-                Node password_node = nodelist.item(0).getChildNodes().item(0);
-                nodelist = document.getElementsByTagName("name");
-                Node name_node = nodelist.item(0).getChildNodes().item(0);
-                nodelist = document.getElementsByTagName("os_use_flg");
-                Node os_use_flg_node = nodelist.item(0).getChildNodes().item(0);
-                nodelist = document.getElementsByTagName("os_project_name");
-                Node os_project_name_node = nodelist.item(0).getChildNodes().item(0);
-                nodelist = document.getElementsByTagName("os_user_domain_name");
-                Node os_user_domain_name_node = nodelist.item(0).getChildNodes().item(0);
-                nodelist = document.getElementsByTagName("os_project_domain_name");
-                Node os_project_domain_name_node = nodelist.item(0).getChildNodes().item(0);
-
-                os_use_flg = os_use_flg_node.getNodeValue();
-                password = password_node.getNodeValue();
-                name = name_node.getNodeValue();
-
-                if (os_use_flg.equals("1")) {
-                    os_project_name = os_project_name_node.getNodeValue();
-                    os_user_domain_name = os_user_domain_name_node.getNodeValue();
-                    os_project_domain_name = os_project_domain_name_node.getNodeValue();
-                }
-
-                chk_flg = result_node.getNodeValue();
-                if (chk_flg.equals("1")) {
-                    isFlg = true;
-                }
-
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-
-            if (isFlg) {
-                if (os_use_flg.equals("1")) {
-                    ContentValues user_info = new ContentValues();
-                    user_info.put("email", email.getText().toString());
-                    user_info.put("password", password);
-                    user_info.put("name", name);
-                    user_info.put("os_project_name", os_project_name);
-                    user_info.put("os_user_domain_name", os_user_domain_name);
-                    user_info.put("os_project_domain_name", os_project_domain_name);
-
-                    gotoNextActivity(MainActivity.class, user_info);
-                } else {
-                    ContentValues user_info = new ContentValues();
-                    user_info.put("email", email.getText().toString());
-                    user_info.put("password", password);
-                    user_info.put("name", name);
-                    user_info.put("os_project_name", os_project_name);
-                    user_info.put("os_user_domain_name", os_user_domain_name);
-                    user_info.put("os_project_domain_name", os_project_domain_name);
-
-                    gotoNextActivity(OsRegistActivity.class, user_info);
-                }
-            } else {
-                resultText.setText(R.string.deny_login_alert_msg);
-            }
-             */
         }
     }
 

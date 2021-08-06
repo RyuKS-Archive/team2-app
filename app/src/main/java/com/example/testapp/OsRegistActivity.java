@@ -60,21 +60,21 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
                     regist_info.put("OS_TOKEN", "");
                 }
 
-                regist_info.put("default_project_id", "");
-                regist_info.put("domain_id", "");
+                regist_info.put("default_project_id", "myproject"); // service
+                regist_info.put("domain_id", "default");
                 regist_info.put("enabled", true);
-                regist_info.put("protocol_id", "");
-                regist_info.put("unique_id", "");
-                regist_info.put("idp_id", "");
+                regist_info.put("protocol_id", ""); //
+                regist_info.put("unique_id", "");   //
+                regist_info.put("idp_id", "");      //
                 regist_info.put("name", values.get("user").toString().split("@")[0]);
                 regist_info.put("password", values.get("password").toString());
-                regist_info.put("description", "");
-                regist_info.put("email", "");
+                regist_info.put("description", "Auto generated user by Bono 2 team");
+                regist_info.put("email", values.get("user").toString());
                 regist_info.put("ignore_password_expiry", true);
 
                 response = httputil.openstack_createUser(values);
 
-                // 생성 성공시 DB 업데이트 os 데이터 입력 후 main으로 이동
+
             }
 
             return result;
