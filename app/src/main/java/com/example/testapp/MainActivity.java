@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -27,10 +28,12 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         Button oneBtn = findViewById(R.id.oneBtn);
         Button twoBtn = findViewById(R.id.twoBtn);
         Button threeBtn = findViewById(R.id.threeBtn);
+        Button fourBtn = findViewById(R.id.fourBtn);
 
         oneBtn.setOnTouchListener(this);
         twoBtn.setOnTouchListener(this);
         threeBtn.setOnTouchListener(this);
+        fourBtn.setOnTouchListener(this);
 
         TextView infoText1 = findViewById(R.id.infoText1);
         TextView infoText2 = findViewById(R.id.infoText2);
@@ -66,7 +69,24 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                 response = httputil.openstack_getAuthToken(values);
             } else if (values.get("btnNum") == "2") {
-                response = httputil.openstack_selectUser(OS_TOKEN);
+                ContentValues values = new ContentValues();
+
+                if (OS_TOKEN != null) {
+                    values.put("OS_TOKEN", OS_TOKEN);
+                } else {
+                    values.put("OS_TOKEN", "");
+                }
+
+                Intent intent = getIntent();
+                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
+
+                values.put("description", "Auto Setting role By Bono 2 team");
+                //values.put("domain_id", "default");
+                values.put("name", user_info.getAsString("email").split("@")[0]);
+
+                response = httputil.openstack_createRole(values);
+
+                //response = httputil.openstack_selectUser(OS_TOKEN);
             } else if (values.get("btnNum") == "3") {
                 ContentValues values = new ContentValues();
 
@@ -76,19 +96,53 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     values.put("OS_TOKEN", "");
                 }
 
-                values.put("default_project_id", "");
-                values.put("domain_id", "");
+                Intent intent = getIntent();
+                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
+
+                Log.e("MainActivity", "password : " + user_info.get("password").toString());
+
+                values.put("default_project_id", "myproject"); // service
+                values.put("domain_id", "default");
                 values.put("enabled", true);
-                values.put("protocol_id", "");
-                values.put("unique_id", "");
-                values.put("idp_id", "");
-                values.put("name", "");
-                values.put("password", "");
-                values.put("description", "");
-                values.put("email", "");
+                values.put("protocol_id", ""); //
+                values.put("unique_id", "");   //
+                values.put("idp_id", "");      //
+                values.put("name", user_info.get("email").toString().split("@")[0]);
+                values.put("password", user_info.get("password").toString());
+                values.put("description", "Auto Generated User By Bono 2 team");
+                values.put("email", user_info.get("email").toString());
                 values.put("ignore_password_expiry", true);
 
                 response = httputil.openstack_createUser(values);
+            }  else if (values.get("btnNum") == "4") {
+                ContentValues values = new ContentValues();
+
+                if (OS_TOKEN != null) {
+                    values.put("OS_TOKEN", OS_TOKEN);
+                } else {
+                    values.put("OS_TOKEN", "");
+                }
+
+                Intent intent = getIntent();
+                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
+
+                values.put("project_id", "myproject");
+                values.put("name", user_info.getAsString("email").split("@")[0]);
+
+                response = httputil.openstack_addRole(values);
+
+                //response = httputil.openstack_selectUser(OS_TOKEN);
+            } else if (values.get("btnNum") == "5") {
+                ContentValues values = new ContentValues();
+
+                Intent intent = getIntent();
+                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
+
+                values.put("OS_USERNAME", user_info.get("email").toString().split("@")[0]);
+                values.put("OS_PASSWORD", user_info.get("password").toString());
+                values.put("OS_USER_DOMAIN_NAME", "Default");
+
+                response = httputil.openstack_getCreateUserToken(values);
             }
 
             return result;
@@ -108,6 +162,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
             } else if (values.get("btnNum") == "2") {
 
             } else if (values.get("btnNum") == "3") {
+
+            } else if (values.get("btnNum") == "4") {
+
+            } else if (values.get("btnNum") == "4") {
 
             }
 
@@ -199,6 +257,66 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                         ContentValues values = new ContentValues();
                         values.put("btnNum", "3");
+
+                        NetworkTask networkTask = new NetworkTask(values);
+                        networkTask.execute();
+                    }
+
+                    break;
+
+                case R.id.fourBtn:
+                    /**********************
+                     * 3
+                     **********************/
+
+                    if (!networkCheck()) {
+                        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+                        ab.setMessage(R.string.network_enable_alert_msg);
+                        ab.setIcon(android.R.drawable.ic_dialog_alert);
+                        ab.setCancelable(false);
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                        ab.show();
+
+                    } else {
+                        Intent intent = getIntent();
+                        String emailStr = intent.getExtras().getString("email");
+
+                        ContentValues values = new ContentValues();
+                        values.put("btnNum", "4");
+
+                        NetworkTask networkTask = new NetworkTask(values);
+                        networkTask.execute();
+                    }
+
+                    break;
+
+                case R.id.fiveBtn:
+                    /**********************
+                     * 3
+                     **********************/
+
+                    if (!networkCheck()) {
+                        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+                        ab.setMessage(R.string.network_enable_alert_msg);
+                        ab.setIcon(android.R.drawable.ic_dialog_alert);
+                        ab.setCancelable(false);
+                        ab.setPositiveButton(R.string.description_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                        ab.show();
+
+                    } else {
+                        Intent intent = getIntent();
+                        String emailStr = intent.getExtras().getString("email");
+
+                        ContentValues values = new ContentValues();
+                        values.put("btnNum", "5");
 
                         NetworkTask networkTask = new NetworkTask(values);
                         networkTask.execute();

@@ -140,18 +140,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
-            android:text="getAuthToken" />
-
-        <Button
-            android:id="@+id/twoBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
-            android:textColor="@color/white"
-            android:text="getUserList" />
+            android:text="getAdminAuthToken" />
 
         <Button
             android:id="@+id/threeBtn"
@@ -163,6 +152,39 @@
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
             android:text="createUser" />
+
+        <Button
+            android:id="@+id/twoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/ripple_effect"
+            android:textColor="@color/white"
+            android:text="setUserRole" />
+
+        <Button
+            android:id="@+id/fourBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/ripple_effect"
+            android:textColor="@color/white"
+            android:text="setAddRole" />
+
+        <Button
+            android:id="@+id/fiveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/ripple_effect"
+            android:textColor="@color/white"
+            android:text="getCreateUserToken" />
 
     </LinearLayout>
 

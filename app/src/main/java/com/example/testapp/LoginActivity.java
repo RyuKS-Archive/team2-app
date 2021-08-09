@@ -96,6 +96,7 @@ public class LoginActivity extends ActivityHelper implements View.OnTouchListene
                     JSONObject resJson = new JSONObject(response.getAsString("result"));
                     email = resJson.getString("email");
                     name = resJson.getString("name");
+                    password = values.get("password").toString();
                     auth_flg = resJson.getInt("auth_flg");
                     os_use_flg = resJson.getInt("os_use_flg");
                     os_project_name = resJson.getString("os_project_name");
