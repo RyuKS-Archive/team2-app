@@ -41,7 +41,12 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         infoText1.setText(values.get("name").toString() + "#");
         infoText2.setText(values.get("email").toString()  + "#");
 
-        // 인텐트 os데이터 가지고와서 계정 토큰 생성
+        // GET AUTH TOKEN
+        ContentValues tmpValue = new ContentValues();
+        tmpValue.put("btnNum", 0);
+
+        NetworkTask networkTask = new NetworkTask(tmpValue);
+        networkTask.execute();
 
     }
 
@@ -58,91 +63,48 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
             String result = "";
             HttpUtil httputil = new HttpUtil();
 
-            if (values.get("btnNum") == "1") {
-                ContentValues values = new ContentValues();
+            switch (values.getAsInteger("btnNum")) {
+                case 0: //GET AUTH TOKEN
+                    Intent intent = getIntent();
+                    ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
 
-                values.put("OS_USERNAME", "admin");
-                values.put("OS_PASSWORD", "qhrwl4857!");
-                values.put("OS_PROJECT_NAME", "admin");
-                values.put("OS_USER_DOMAIN_NAME", "Default");
-                values.put("OS_PROJECT_DOMAIN_NAME", "Default");
+                    ContentValues auth_token = new ContentValues();
 
-                response = httputil.openstack_getAuthToken(values);
-            } else if (values.get("btnNum") == "2") {
-                ContentValues values = new ContentValues();
+                    auth_token.put("IS_SCOPE", false);
+                    auth_token.put("OS_USERNAME", user_info.getAsString("email").split("@")[0]);
+                    auth_token.put("OS_PASSWORD", user_info.getAsString("password"));
+                    auth_token.put("OS_PROJECT_NAME", "");
+                    auth_token.put("OS_USER_DOMAIN_NAME", "Default");
+                    auth_token.put("OS_PROJECT_DOMAIN_NAME", "");
 
-                if (OS_TOKEN != null) {
-                    values.put("OS_TOKEN", OS_TOKEN);
-                } else {
-                    values.put("OS_TOKEN", "");
-                }
+                    response = httputil.openstack_getAuthToken(auth_token);
 
-                Intent intent = getIntent();
-                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
+                    break;
+                case 1:
+                    ContentValues tmpValue = new ContentValues();
 
-                values.put("description", "Auto Setting role By Bono 2 team");
-                //values.put("domain_id", "default");
-                values.put("name", user_info.getAsString("email").split("@")[0]);
+                    OS_TOKEN = httputil.openstack_getAuthScopeToken(OS_TOKEN);
 
-                response = httputil.openstack_createRole(values);
+                    if (OS_TOKEN != null) {
+                        tmpValue.put("OS_TOKEN", OS_TOKEN);
+                    } else {
+                        tmpValue.put("OS_TOKEN", "");
+                    }
 
-                //response = httputil.openstack_selectUser(OS_TOKEN);
-            } else if (values.get("btnNum") == "3") {
-                ContentValues values = new ContentValues();
+                    response = httputil.openstack_CreateServer(tmpValue);
+                    //response = httputil.openstack_ServerList(response.getAsString("authToken"));
 
-                if (OS_TOKEN != null) {
-                    values.put("OS_TOKEN", OS_TOKEN);
-                } else {
-                    values.put("OS_TOKEN", "");
-                }
-
-                Intent intent = getIntent();
-                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
-
-                Log.e("MainActivity", "password : " + user_info.get("password").toString());
-
-                values.put("default_project_id", "myproject"); // service
-                values.put("domain_id", "default");
-                values.put("enabled", true);
-                values.put("protocol_id", ""); //
-                values.put("unique_id", "");   //
-                values.put("idp_id", "");      //
-                values.put("name", user_info.get("email").toString().split("@")[0]);
-                values.put("password", user_info.get("password").toString());
-                values.put("description", "Auto Generated User By Bono 2 team");
-                values.put("email", user_info.get("email").toString());
-                values.put("ignore_password_expiry", true);
-
-                response = httputil.openstack_createUser(values);
-            }  else if (values.get("btnNum") == "4") {
-                ContentValues values = new ContentValues();
-
-                if (OS_TOKEN != null) {
-                    values.put("OS_TOKEN", OS_TOKEN);
-                } else {
-                    values.put("OS_TOKEN", "");
-                }
-
-                Intent intent = getIntent();
-                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
-
-                values.put("project_id", "myproject");
-                values.put("name", user_info.getAsString("email").split("@")[0]);
-
-                response = httputil.openstack_addRole(values);
-
-                //response = httputil.openstack_selectUser(OS_TOKEN);
-            } else if (values.get("btnNum") == "5") {
-                ContentValues values = new ContentValues();
-
-                Intent intent = getIntent();
-                ContentValues user_info = (ContentValues) intent.getExtras().get("DATA");
-
-                values.put("OS_USERNAME", user_info.get("email").toString().split("@")[0]);
-                values.put("OS_PASSWORD", user_info.get("password").toString());
-                values.put("OS_USER_DOMAIN_NAME", "Default");
-
-                response = httputil.openstack_getCreateUserToken(values);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                default:
+                    ;
             }
 
             return result;
@@ -151,24 +113,27 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            //Test Code
 
-            if (values.get("btnNum") == "1") {
-                TextView infoText3 = findViewById(R.id.infoText3);
-                infoText3.setText("expire_dt# " + response.get("expires_at"));
-                //TextView authToken = findViewById(R.id.authToken);
-                //authToken.setText("인증 토큰 : " + response.get("authToken"));
-                OS_TOKEN = response.get("authToken").toString();
-            } else if (values.get("btnNum") == "2") {
+            switch (values.getAsInteger("btnNum")) {
+                case 0:
+                    TextView infoText3 = findViewById(R.id.infoText3);
 
-            } else if (values.get("btnNum") == "3") {
-
-            } else if (values.get("btnNum") == "4") {
-
-            } else if (values.get("btnNum") == "4") {
-
+                    infoText3.setText("expire_dt# " + response.get("expires_at"));
+                    OS_TOKEN = response.get("authToken").toString();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                default:
+                    ;
             }
-
         }
     }
 
@@ -196,7 +161,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                     } else {
                         ContentValues values = new ContentValues();
-                        values.put("btnNum", "1");
+                        values.put("btnNum", 1);
 
                         NetworkTask networkTask = new NetworkTask(values);
                         networkTask.execute();
@@ -222,14 +187,11 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ab.show();
 
                     } else {
-                        Intent intent = getIntent();
-                        String emailStr = intent.getExtras().getString("email");
-
                         ContentValues values = new ContentValues();
-                        values.put("btnNum", "2");
+                        values.put("btnNum", 2);
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;
@@ -256,10 +218,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         String emailStr = intent.getExtras().getString("email");
 
                         ContentValues values = new ContentValues();
-                        values.put("btnNum", "3");
+                        values.put("btnNum", 3);
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;
@@ -286,10 +248,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         String emailStr = intent.getExtras().getString("email");
 
                         ContentValues values = new ContentValues();
-                        values.put("btnNum", "4");
+                        values.put("btnNum", 4);
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;
@@ -316,10 +278,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         String emailStr = intent.getExtras().getString("email");
 
                         ContentValues values = new ContentValues();
-                        values.put("btnNum", "5");
+                        values.put("btnNum", 5);
 
-                        NetworkTask networkTask = new NetworkTask(values);
-                        networkTask.execute();
+                        //NetworkTask networkTask = new NetworkTask(values);
+                        //networkTask.execute();
                     }
 
                     break;

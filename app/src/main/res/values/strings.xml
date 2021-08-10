@@ -11,6 +11,7 @@
     ==============================-->
     <string name="chk_email">http://210.216.61.151:12080/user</string>
     <string name="chk_login">http://210.216.61.151:12080/user/login</string>
+    <string name="udt_os_use">http://210.216.61.151:12080/user/os</string>
     <string name="join">http://210.216.61.151:12080/user/join</string>
     <string name="send_mail">http://210.216.61.151:12080/auth/mail</string>
 
@@ -61,5 +62,11 @@
     <!--===========================
         MainActivity
     ==============================-->
+
+    <!--===========================
+        HttpUtil
+    ==============================-->
+    <string name="project">9d7d000a324f4de5908c079117f8da76</string>
+    <string name="role">f6a1d237267c467c898938796aa0b16f</string>
 
 </resources>

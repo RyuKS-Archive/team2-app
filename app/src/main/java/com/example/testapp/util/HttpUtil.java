@@ -24,6 +24,8 @@ public class HttpUtil {
     private String pageUrl = "";
     private String httpMethod;
     private final int HTTP_ERR = 400;
+    private final String project_id = "9d7d000a324f4de5908c079117f8da76";
+    private final String role_id = "f6a1d237267c467c898938796aa0b16f";
 
     public HttpUtil() {
         this.httpMethod = "POST";
@@ -147,11 +149,12 @@ public class HttpUtil {
             return null;
         }
 
-        String OS_USERNAME = values.get("OS_USERNAME").toString();
-        String OS_PASSWORD = values.get("OS_PASSWORD").toString();
-        String OS_PROJECT_NAME = values.get("OS_PROJECT_NAME").toString();
-        String OS_USER_DOMAIN_NAME = values.get("OS_USER_DOMAIN_NAME").toString();
-        String OS_PROJECT_DOMAIN_NAME = values.get("OS_PROJECT_DOMAIN_NAME").toString();
+        boolean IS_SCOPE = values.getAsBoolean("IS_SCOPE");
+        String OS_USERNAME = values.getAsString("OS_USERNAME");
+        String OS_PASSWORD = values.getAsString("OS_PASSWORD");
+        String OS_PROJECT_NAME = values.getAsString("OS_PROJECT_NAME");
+        String OS_USER_DOMAIN_NAME = values.getAsString("OS_USER_DOMAIN_NAME");
+        String OS_PROJECT_DOMAIN_NAME = values.getAsString("OS_PROJECT_DOMAIN_NAME");
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/auth/tokens?nocatalog";
         String OS_TOKEN = "";
 
@@ -170,61 +173,103 @@ public class HttpUtil {
         JSONObject domain_scope = new JSONObject();
         JSONArray passwordArr = new JSONArray();
 
-
         Log.e("httputl", "getAuthToken START!");
-        try{
-            domain_idnetity.put("name",OS_USER_DOMAIN_NAME);
 
-            user.put("domain", domain_idnetity);
-            user.put("name",OS_USERNAME);
-            user.put("password",OS_PASSWORD);
+        if (IS_SCOPE) {
+            try{
+                domain_idnetity.put("name",OS_USER_DOMAIN_NAME);
 
-            password.put("user", user);
+                user.put("domain", domain_idnetity);
+                user.put("name",OS_USERNAME);
+                user.put("password",OS_PASSWORD);
 
-            passwordArr.put("password");
-            identity.put("methods", passwordArr);
+                password.put("user", user);
 
-            identity.put("password", password);
+                passwordArr.put("password");
+                identity.put("methods", passwordArr);
 
-            domain_scope.put("name",OS_PROJECT_DOMAIN_NAME);
-            project.put("domain", domain_scope);
-            project.put("name",OS_PROJECT_NAME);
+                identity.put("password", password);
 
-            scope.put("project", project);
+                domain_scope.put("name",OS_PROJECT_DOMAIN_NAME);
+                project.put("domain", domain_scope);
+                project.put("name",OS_PROJECT_NAME);
 
-            auth.put("identity", identity);
-            auth.put("scope", scope);
+                scope.put("project", project);
 
-            jsonObject.put("auth", auth);
+                auth.put("identity", identity);
+                auth.put("scope", scope);
 
-        }catch(JSONException e) {
-            e.printStackTrace();
-        }
-        /* get auth json example
-        '{ "auth": {
-                "identity": {
-                    "methods": ["password"]
-                    "password": {
-                        "user": {
-                            "domain": { "name": "'"$OS_USER_DOMAIN_NAME"'"}
-                            "name": "'"$OS_USERNAME"'",
-                            "password": "'"$OS_PASSWORD"'"
+                jsonObject.put("auth", auth);
+
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
+
+            /* get auth json example
+            {
+                "auth": {
+                    "identity": {
+                        "methods": ["password"]
+                        "password": {
+                            "user": {
+                                "domain": { "name": "'"$OS_USER_DOMAIN_NAME"'"}
+                                "name": "'"$OS_USERNAME"'",
+                                "password": "'"$OS_PASSWORD"'"
+                            }
+                        }
+                    }
+                    "scope": {
+                        "project": {
+                            "domain": { "name": "'"$OS_PROJECT_DOMAIN_NAME"'" }
+                            "name":  "'"$OS_PROJECT_NAME"'"
+                            }
+                    }
+                }
+            }
+            */
+        } else {
+            try{
+                domain_idnetity.put("name",OS_USER_DOMAIN_NAME);
+
+                user.put("domain", domain_idnetity);
+                user.put("name",OS_USERNAME);
+                user.put("password",OS_PASSWORD);
+
+                passwordArr.put("password");
+                identity.put("methods", passwordArr);
+
+                password.put("user", user);
+                identity.put("password", password);
+
+                auth.put("identity", identity);
+
+                jsonObject.put("auth", auth);
+
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
+
+            /*
+            {
+                "auth": {
+                    "identity": {
+                        "methods": [
+                            "password"
+                        ],
+                        "password": {
+                            "user": {
+                                "name": "admin",
+                                "domain": {
+                                    "name": "Default"
+                                },
+                                "password": "devstacker"
+                            }
                         }
                     }
                 }
-
             }
+            */
         }
-
-                "scope": {
-                    "project": {
-                        "domain": { "name": "'"$OS_PROJECT_DOMAIN_NAME"'" }
-                        "name":  "'"$OS_PROJECT_NAME"'"
-                        }
-                }
-            }
-        }
-        */
 
         try{
             URL url = new URL(OS_AUTH_URL);
@@ -248,7 +293,6 @@ public class HttpUtil {
                 return null;
             }
 
-//authToken추출
             Map<String, List<String>> responseHeader = conn.getHeaderFields();
             Iterator<String> headerIt = responseHeader.keySet().iterator();
             Map<String, String> headerResult = new LinkedHashMap<String, String>();
@@ -306,6 +350,140 @@ public class HttpUtil {
         return null;
     }
 
+    public String openstack_getAuthScopeToken(String OS_TOKEN) {
+
+        String OS_AUTH_URL = "http://210.216.61.151:12050/v3/auth/tokens?nocatalog";
+
+        HttpURLConnection conn = null;
+        ContentValues response = null;
+
+        JSONObject jsonObject = new JSONObject();
+        JSONObject auth = new JSONObject();
+        JSONObject identity = new JSONObject();
+        JSONObject token = new JSONObject();
+        JSONObject scope = new JSONObject();
+        JSONObject project = new JSONObject();
+        JSONArray methodsArr = new JSONArray();
+
+        Log.e("httputl", "getAuthToken START!");
+
+        try{
+            methodsArr.put("token");
+            identity.put("methods", methodsArr);
+
+            token.put("id", OS_TOKEN);
+            identity.put("token", token);
+
+            project.put("id", project_id);
+            scope.put("project", project);
+
+            auth.put("identity", identity);
+            auth.put("scope", scope);
+
+            jsonObject.put("auth", auth);
+
+        }catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        //{
+        //    "auth": {
+        //        "identity": {
+        //              "methods": [
+        //                  "token"
+        //              ],
+        //              "token": {
+        //                  "id": "'$OS_TOKEN'"
+        //              }
+        //          },
+        //          "scope": {
+        //              "project": {
+        //                  "id": "a6944d763bf64ee6a275f1263fae0352"
+        //              }
+        //          }
+        //      }
+        // }
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/json");
+
+            String strJson = jsonObject.toString();
+            Log.e("httputil","json : "+ strJson);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(strJson.getBytes("UTF-8"));
+            os.flush();
+            os.close();
+
+            if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+                String code = Integer.toString(conn.getResponseCode());
+                Log.e("httputil", "Response Code : " + code);
+
+                return null;
+            }
+
+            Map<String, List<String>> responseHeader = conn.getHeaderFields();
+            Iterator<String> headerIt = responseHeader.keySet().iterator();
+            Map<String, String> headerResult = new LinkedHashMap<String, String>();
+
+            if(headerIt != null) {
+                Log.e("httputil","--------header start--------");
+                while(headerIt.hasNext()) {
+                    String headerKey = (String) headerIt.next();
+                    if(responseHeader.get(headerKey) != null) {
+                        Log.e("httputil", headerKey +":"+ responseHeader.get(headerKey).get(0));
+                        headerResult.put(headerKey, responseHeader.get(headerKey).get(0));
+
+                        if("X-Subject-Token".equals(headerKey)) {
+                            OS_TOKEN = responseHeader.get(headerKey).get(0);
+                        }
+                    }
+                }
+                Log.e("httputil","--------header end--------");
+            }
+
+            try{
+                Log.e("httputil","--------json parse--------");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+                JSONObject resJson = new JSONObject(result.toString());
+
+                Log.e("httputil","result : " + result.toString());
+                JSONObject restoken = resJson.getJSONObject("token");
+                String expires_at = restoken.getString("expires_at");
+
+                Log.e("httputil","expires_at : "+ expires_at);
+
+                response = new ContentValues();
+                response.put("authToken", OS_TOKEN);
+                response.put("expires_at", expires_at);
+
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
+
+            return OS_TOKEN;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
+    /*
     public ContentValues openstack_selectUser(String authToken) {
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/users";
         String OS_TOKEN = authToken;
@@ -345,16 +523,7 @@ public class HttpUtil {
                 JSONObject resJson = new JSONObject(result.toString());
 
                 Log.e("httputil","result : " + result.toString());
-                /*
-                JSONObject token = resJson.getJSONObject("users");
-                String expires_at = token.getString("expires_at");
 
-                Log.e("httputil","expires_at : "+ expires_at);
-
-                response = new ContentValues();
-                response.put("authToken", OS_TOKEN);
-                response.put("expires_at", expires_at);
-                */
             }catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -371,24 +540,25 @@ public class HttpUtil {
 
         return null;
     }
+     */
 
-    public ContentValues openstack_createUser(ContentValues values) {
+    public ContentValues openstack_CreateUser(ContentValues values) {
         if(values == null) {
             return null;
         }
 
-        String default_project_id = values.get("default_project_id").toString();
-        String domain_id = values.get("domain_id").toString();
-        boolean enabled = (boolean) values.get("enabled");
-        String protocol_id = values.get("protocol_id").toString();
-        String unique_id = values.get("unique_id").toString();
-        String idp_id = values.get("idp_id").toString();
-        String name = values.get("name").toString();
-        String password = values.get("password").toString();
-        String description = values.get("description").toString();
-        String email = values.get("email").toString();
-        boolean ignore_password_expiry = (boolean) values.get("ignore_password_expiry");
-        String OS_TOKEN = values.get("OS_TOKEN").toString();
+        //String default_project_id = values.get("default_project_id").toString();
+        String domain_id = values.getAsString("domain_id");
+        boolean enabled = values.getAsBoolean("enabled");
+        //String protocol_id = values.get("protocol_id").toString();
+        //String unique_id = values.get("unique_id").toString();
+        //String idp_id = values.get("idp_id").toString();
+        String name = values.getAsString("name");
+        String password = values.getAsString("password");
+        String description = values.getAsString("description");
+        String email = values.getAsString("email");
+        //boolean ignore_password_expiry = (boolean) values.get("ignore_password_expiry");
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/users";
 
 
@@ -478,9 +648,80 @@ public class HttpUtil {
             os.flush();
             os.close();
 
-            if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                String code = Integer.toString(conn.getResponseCode());
-                Log.e("httputil", "Response Code : " + code);
+            response = new ContentValues();
+            int response_code = conn.getResponseCode();
+
+            if(response_code != HttpURLConnection.HTTP_CREATED) {
+                Log.e("httputil", "Response Code : " + response_code);
+                response.put("response_code", response_code);
+
+                return response;
+            }
+
+            try{
+                Log.e("httputil","--------json parse--------");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+                JSONObject resJson = new JSONObject(result.toString());
+
+                Log.e("httputil","result : " + result.toString());
+
+                JSONObject token = resJson.getJSONObject("user");
+                //String p_id = token.getString("default_project_id") == null? "" : token.getString("default_project_id");
+                String d_id = token.getString("domain_id");
+                String u_id = token.getString("id");
+
+                Log.e("httputil","response :" + d_id + ":" + u_id);
+
+                response.put("response_code", response_code);
+                //response.put("project_id", p_id);
+                response.put("domain_id", d_id);
+                response.put("user_id", u_id);
+
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
+    public ContentValues openstack_ServerList(String authToken) {
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers";
+        String OS_TOKEN = authToken;
+
+        HttpURLConnection conn = null;
+
+        Log.e("httputl", "server list START!");
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token", OS_TOKEN);
+
+            Log.e("httputil","OS_TOKEN : " + OS_TOKEN);
+
+            int response_code = conn.getResponseCode();
+            Log.e("httputil", "Response Code : " + response_code);
+
+            if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e("httputil", "Response Code : " + response_code);
 
                 return null;
             }
@@ -497,16 +738,6 @@ public class HttpUtil {
 
                 Log.e("httputil","result : " + result.toString());
 
-                /*
-                JSONObject token = resJson.getJSONObject("token");
-                String expires_at = token.getString("expires_at");
-
-                Log.e("httputil","expires_at : "+ expires_at);
-
-                response = new ContentValues();
-                response.put("authToken", OS_TOKEN);
-                response.put("expires_at", expires_at);
-                */
             }catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -524,8 +755,138 @@ public class HttpUtil {
         return null;
     }
 
+    public ContentValues openstack_CreateServer(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
+        //String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/" + project_id + "/servers";
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers";
+        //String name = values.get("name").toString();
+        //String description = values.get("description").toString();
+
+        HttpURLConnection conn = null;
+        ContentValues response = null;
+
+        JSONObject jsonObject = new JSONObject();
+        JSONObject server = new JSONObject();
+        JSONObject security_groups = new JSONObject();
+        JSONArray security_groups_Arr = new JSONArray();
+
+        JSONArray network_Arr = new JSONArray();
+
+        Log.e("httputl", "create server START!");
+
+        try {
+            server.put("name", "new-server-test");
+            //server.put("imageRef", "61ffc40a-7028-4163-bcb6-188672deaf4e");
+            server.put("imageRef", "89d601e6-1a32-4ad4-a546-d4d79d4d4156");
+            server.put("flavorRef", "0");
+
+            security_groups.put("name", "default");
+            security_groups_Arr.put(security_groups);
+
+            server.put("security_groups", security_groups_Arr);
+
+            network_Arr.put("66778ebf-f406-433d-a63b-1f9ac331b449");
+            server.put("networks", network_Arr);
+
+            jsonObject.put("server", server);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        /* create server
+        {
+            "server" : {
+                "name" : "new-server-test",
+                "imageRef" : "61ffc40a-7028-4163-bcb6-188672deaf4e",
+                "flavorRef" : "1",
+                "security_groups": [
+                    {
+                        "name": "default"
+                    }
+                ],
+                "networks": "66778ebf-f406-433d-a63b-1f9ac331b449"
+            }
+        }
+         */
+
+        try{
+
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            Log.e("httputil","OS_TOKEN : "+ OS_TOKEN);
+
+            String strJson = jsonObject.toString();
+            Log.e("httputil","json : "+ strJson);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(strJson.getBytes("UTF-8"));
+            os.flush();
+            os.close();
+
+            response = new ContentValues();
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+
+            if(response_code != HttpURLConnection.HTTP_CREATED) {
+                Log.e("httputil", "Response Code : " + response_code);
+
+                //return response;
+            }
+
+            try{
+                BufferedReader reader = null;
+                if (response_code >= HTTP_ERR) {
+                    reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+                } else {
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                }
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                JSONObject resJson = new JSONObject(result.toString());
+
+                /*
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                */
+                Log.e("httputil","result : " + result.toString());
+
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
 
 
+    /*
     public ContentValues openstack_createRole(ContentValues values) {
 
         if(values == null) {
@@ -556,15 +917,14 @@ public class HttpUtil {
             e.printStackTrace();
         }
 
-        /*
-        {
-            "role": {
-                "description": "My new role"
-                "domain_id": "92e782c4988642d783a95f4a87c3fdd7",
-                "name": "developer"
-            }
-        }
-        */
+
+        //{
+        //    "role": {
+        //        "description": "My new role"
+        //        "domain_id": "92e782c4988642d783a95f4a87c3fdd7",
+        //        "name": "developer"
+        //    }
+        //}
 
         try{
 
@@ -603,7 +963,6 @@ public class HttpUtil {
 
                 Log.e("httputil","result : " + result.toString());
 
-
             }catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -620,9 +979,9 @@ public class HttpUtil {
 
         return null;
     }
+     */
 
-
-    public ContentValues openstack_addRole(ContentValues values) {
+    public String openstack_AddRole(ContentValues values) {
         if(values == null) {
             return null;
         }
@@ -630,9 +989,8 @@ public class HttpUtil {
         /*
         /v3/projects/{project_id}/users/{user_id}/roles/{role_id}
          */
-        String OS_AUTH_URL = "http://210.216.61.151:12050/v3/projects/6ea49a7c74754e8aa1877d03607b2f4e/users/0347869af701488f99dc65e30c59a578/roles/97b61fb9d05d418d90e99340b83d271f";
+        String OS_AUTH_URL = "http://210.216.61.151:12050/v3/projects/" + project_id + "/users/" + values.getAsString("user_id") + "/roles/" + role_id;
         String OS_TOKEN = values.get("OS_TOKEN").toString();
-
         HttpURLConnection conn = null;
         ContentValues response = null;
 
@@ -652,14 +1010,15 @@ public class HttpUtil {
             int response_code = conn.getResponseCode();
             if(response_code != HttpURLConnection.HTTP_NO_CONTENT) {
                 Log.e("httputil", "Response Code : " + response_code);
-                response.put("response_code", response_code);
+                //response.put("response_code", response_code);
 
-                return response;
+                return Integer.toString(response_code);
             }
 
-            response.put("response_code", response_code);
+            //response.put("response_code", response_code);
 
-            return response;
+            Log.e("httputil", "Response Code : " + response_code);
+            return Integer.toString(response_code);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -672,7 +1031,7 @@ public class HttpUtil {
         return null;
     }
 
-
+    /*
     public ContentValues openstack_getCreateUserToken(ContentValues values) {
         if(values == null) {
             return null;
@@ -720,31 +1079,29 @@ public class HttpUtil {
         }catch(JSONException e) {
             e.printStackTrace();
         }
-        /* get auth json example
-        '{ "auth": {
-                "identity": {
-                    "methods": ["password"]
-                    "password": {
-                        "user": {
-                            "domain": { "name": "'"$OS_USER_DOMAIN_NAME"'"}
-                            "name": "'"$OS_USERNAME"'",
-                            "password": "'"$OS_PASSWORD"'"
-                        }
-                    }
-                }
 
-            }
-        }
 
-                "scope": {
-                    "project": {
-                        "domain": { "name": "'"$OS_PROJECT_DOMAIN_NAME"'" }
-                        "name":  "'"$OS_PROJECT_NAME"'"
-                        }
-                }
-            }
-        }
-        */
+        //{ "auth": {
+        //        "identity": {
+        //            "methods": ["password"]
+        //            "password": {
+        //                "user": {
+        //                    "domain": { "name": "'"$OS_USER_DOMAIN_NAME"'"}
+        //                    "name": "'"$OS_USERNAME"'",
+        //                    "password": "'"$OS_PASSWORD"'"
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        //        "scope": {
+        //            "project": {
+        //                "domain": { "name": "'"$OS_PROJECT_DOMAIN_NAME"'" }
+        //                "name":  "'"$OS_PROJECT_NAME"'"
+        //                }
+        //        }
+        //    }
+        //}
 
         try{
             URL url = new URL(OS_AUTH_URL);
@@ -768,7 +1125,6 @@ public class HttpUtil {
                 return null;
             }
 
-//authToken추출
             Map<String, List<String>> responseHeader = conn.getHeaderFields();
             Iterator<String> headerIt = responseHeader.keySet().iterator();
             Map<String, String> headerResult = new LinkedHashMap<String, String>();
@@ -825,5 +1181,6 @@ public class HttpUtil {
 
         return null;
     }
+     */
 
 }

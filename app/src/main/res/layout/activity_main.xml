@@ -140,18 +140,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
-            android:text="getAdminAuthToken" />
-
-        <Button
-            android:id="@+id/threeBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
-            android:textColor="@color/white"
-            android:text="createUser" />
+            android:text="Create Server" />
 
         <Button
             android:id="@+id/twoBtn"
@@ -162,6 +151,18 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
+            android:text="Stop Server" />
+
+        <Button
+            android:id="@+id/threeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/ripple_effect"
+            android:textColor="@color/white"
+            android:visibility="invisible"
             android:text="setUserRole" />
 
         <Button
@@ -173,6 +174,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
+            android:visibility="invisible"
             android:text="setAddRole" />
 
         <Button
@@ -184,6 +186,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
+            android:visibility="invisible"
             android:text="getCreateUserToken" />
 
     </LinearLayout>

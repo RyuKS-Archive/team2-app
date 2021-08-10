@@ -12,7 +12,10 @@ import android.widget.Button;
 
 import com.example.testapp.util.HttpUtil;
 
+import java.net.HttpURLConnection;
+
 public class OsRegistActivity extends ActivityHelper implements View.OnTouchListener {
+    private final String HTTP_NO_CONTENT = "204";
     private String OS_TOKEN = "";
     private ContentValues values = null;
 
@@ -32,49 +35,65 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private ContentValues response;
-
-        public NetworkTask() {}
+        private String url = getString(R.string.udt_os_use);
 
         @Override
         protected String doInBackground(Void... params) {
             String result = "";
             HttpUtil httputil = new HttpUtil();
 
-            ContentValues auth_info = new ContentValues();
+            //GET AUTH TOKEN
+            ContentValues auth_token = new ContentValues();
 
-            auth_info.put("OS_USERNAME", "admin");
-            auth_info.put("OS_PASSWORD", "qhrwl4857!");
-            auth_info.put("OS_PROJECT_NAME", "admin");
-            auth_info.put("OS_USER_DOMAIN_NAME", "Default");
-            auth_info.put("OS_PROJECT_DOMAIN_NAME", "Default");
+            auth_token.put("IS_SCOPE", true);
+            auth_token.put("OS_USERNAME", "admin");
+            auth_token.put("OS_PASSWORD", "qhrwl4857!");
+            auth_token.put("OS_PROJECT_NAME", "admin");
+            auth_token.put("OS_USER_DOMAIN_NAME", "Default");
+            auth_token.put("OS_PROJECT_DOMAIN_NAME", "Default");
 
-            response = httputil.openstack_getAuthToken(auth_info);
+            response = httputil.openstack_getAuthToken(auth_token);
 
+            //CREATE USER
             if (response != null) {
                 OS_TOKEN = response.get("authToken").toString();
-                ContentValues regist_info = new ContentValues();
+                ContentValues create_user = new ContentValues();
 
                 if (OS_TOKEN != null) {
-                    regist_info.put("OS_TOKEN", OS_TOKEN);
+                    create_user.put("OS_TOKEN", OS_TOKEN);
                 } else {
-                    regist_info.put("OS_TOKEN", "");
+                    create_user.put("OS_TOKEN", "");
                 }
 
-                regist_info.put("default_project_id", "myproject"); // service
-                regist_info.put("domain_id", "default");
-                regist_info.put("enabled", true);
-                regist_info.put("protocol_id", ""); //
-                regist_info.put("unique_id", "");   //
-                regist_info.put("idp_id", "");      //
-                regist_info.put("name", values.get("user").toString().split("@")[0]);
-                regist_info.put("password", values.get("password").toString());
-                regist_info.put("description", "Auto generated user by Bono 2 team");
-                regist_info.put("email", values.get("user").toString());
-                regist_info.put("ignore_password_expiry", true);
+                create_user.put("default_project_id", "testproject");
+                create_user.put("domain_id", "default");
+                create_user.put("enabled", true);
+                create_user.put("protocol_id", "");
+                create_user.put("unique_id", "");
+                create_user.put("idp_id", "");
+                create_user.put("name", values.get("email").toString().split("@")[0]);
+                create_user.put("password", values.get("password").toString());
+                create_user.put("description", "Auto generated user by Bono 2 team");
+                create_user.put("email", values.get("email").toString());
+                create_user.put("ignore_password_expiry", true);
 
-                response = httputil.openstack_createUser(values);
+                // openstack user create --domain default --password-prompt {user}
+                response = httputil.openstack_CreateUser(create_user);
 
+                //ADD ROLE
+                if(response.getAsInteger("response_code") == HttpURLConnection.HTTP_CREATED) {
+                    ContentValues add_role = new ContentValues();
+                    add_role.put("OS_TOKEN", OS_TOKEN);
+                    add_role.put("user_id", response.getAsString("user_id"));
 
+                    // openstack role add --project testproject --user {user} testrole
+                    result = httputil.openstack_AddRole(add_role);
+
+                    if (result.equals(HTTP_NO_CONTENT)) {
+                        //HttpUtil httputil = new HttpUtil(url, "POST");
+                        response = httputil.request(values);
+                    }
+                }
             }
 
             return result;
@@ -84,6 +103,11 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            if (result.equals(HTTP_NO_CONTENT)) {
+                gotoNextActivity(MainActivity.class, values);
+            } else {
+                // 에러
+            }
         }
     }
 
@@ -113,8 +137,8 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
                         ab.show();
 
                     } else {
-                        //NetworkTask networkTask = new NetworkTask();
-                        //networkTask.execute();
+                        NetworkTask networkTask = new NetworkTask();
+                        networkTask.execute();
                     }
                     break;
 
