@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.testapp.util.HttpUtil;
 
+import java.util.HashMap;
+
 public class MainActivity extends ActivityHelper implements View.OnTouchListener {
     private String OS_TOKEN = null;
     @Override
@@ -53,6 +55,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private ContentValues values;
         private ContentValues response;
+        private HashMap responseMap;
 
         public NetworkTask(ContentValues values) {
             this.values = values;
@@ -62,6 +65,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         protected String doInBackground(Void... params) {
             String result = "";
             HttpUtil httputil = new HttpUtil();
+            ContentValues tmpValue = null;
 
             switch (values.getAsInteger("btnNum")) {
                 case 0: //GET AUTH TOKEN
@@ -78,24 +82,36 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     auth_token.put("OS_PROJECT_DOMAIN_NAME", "");
 
                     response = httputil.openstack_getAuthToken(auth_token);
+                    response = httputil.openstack_getAuthScopeToken(response.getAsString("authToken"));
 
                     break;
                 case 1:
-                    ContentValues tmpValue = new ContentValues();
-
-                    OS_TOKEN = httputil.openstack_getAuthScopeToken(OS_TOKEN);
+                    tmpValue = new ContentValues();
 
                     if (OS_TOKEN != null) {
+                        // GET SCOPE TOKEN
+                        //OS_TOKEN = httputil.openstack_getAuthScopeToken(OS_TOKEN);
                         tmpValue.put("OS_TOKEN", OS_TOKEN);
                     } else {
                         tmpValue.put("OS_TOKEN", "");
                     }
 
-                    response = httputil.openstack_CreateServer(tmpValue);
-                    //response = httputil.openstack_ServerList(response.getAsString("authToken"));
+                    responseMap = httputil.openstack_ServerList(OS_TOKEN);
 
                     break;
                 case 2:
+                    tmpValue = new ContentValues();
+
+                    if (OS_TOKEN != null) {
+                        // GET SCOPE TOKEN
+                        // OS_TOKEN = httputil.openstack_getAuthScopeToken(OS_TOKEN);
+                        tmpValue.put("OS_TOKEN", OS_TOKEN);
+                    } else {
+                        tmpValue.put("OS_TOKEN", "");
+                    }
+
+                    //response = httputil.openstack_CreateServer(tmpValue);
+
                     break;
                 case 3:
                     break;
@@ -122,6 +138,8 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     OS_TOKEN = response.get("authToken").toString();
                     break;
                 case 1:
+
+
                     break;
                 case 2:
                     break;

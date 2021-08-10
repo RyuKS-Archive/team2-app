@@ -140,7 +140,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
-            android:text="Create Server" />
+            android:text="Server List" />
 
         <Button
             android:id="@+id/twoBtn"
@@ -151,7 +151,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/ripple_effect"
             android:textColor="@color/white"
-            android:text="Stop Server" />
+            android:text="Create Server" />
 
         <Button
             android:id="@+id/threeBtn"
@@ -188,6 +188,25 @@
             android:textColor="@color/white"
             android:visibility="invisible"
             android:text="getCreateUserToken" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayoutResult"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_below="@id/linearLayoutBody"
+        android:gravity="center">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/div_line"/>
+
 
     </LinearLayout>
 
