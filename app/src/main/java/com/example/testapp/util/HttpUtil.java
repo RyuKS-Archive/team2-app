@@ -287,12 +287,12 @@ public class HttpUtil {
             os.flush();
             os.close();
 
-            if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                String code = Integer.toString(conn.getResponseCode());
-                Log.e("httputil", "Response Code : " + code);
+            response = new ContentValues();
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
 
-                return null;
-            }
+            if(response_code >= HTTP_ERR) return response;
 
             Map<String, List<String>> responseHeader = conn.getHeaderFields();
             Iterator<String> headerIt = responseHeader.keySet().iterator();
@@ -327,8 +327,6 @@ public class HttpUtil {
                 Log.e("httputil","result : " + result.toString());
                 JSONObject token = resJson.getJSONObject("token");
                 String expires_at = token.getString("expires_at");
-
-                Log.e("httputil","expires_at : "+ expires_at);
 
                 response = new ContentValues();
                 response.put("authToken", OS_TOKEN);

@@ -138,9 +138,43 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_basic"
             android:textColor="@color/white"
             android:text="Server List" />
+
+        <ListView
+            android:id="@+id/serverList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp">
+
+        </ListView>
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:clickable="false"
+            android:fadeScrollbars="false"
+            android:fadingEdge="none"
+            android:fastScrollEnabled="true"
+            android:visibility="invisible"
+            android:id="@+id/serverListView">
+
+        </ListView>
+        -->
 
         <Button
             android:id="@+id/twoBtn"
@@ -149,7 +183,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_basic"
             android:textColor="@color/white"
             android:text="Create Server" />
 
@@ -160,7 +194,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_basic"
             android:textColor="@color/white"
             android:visibility="invisible"
             android:text="setUserRole" />
@@ -172,7 +206,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_basic"
             android:textColor="@color/white"
             android:visibility="invisible"
             android:text="setAddRole" />
@@ -184,7 +218,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_basic"
             android:textColor="@color/white"
             android:visibility="invisible"
             android:text="getCreateUserToken" />

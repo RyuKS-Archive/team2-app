@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.testapp.R;
 
@@ -25,8 +26,8 @@ public class ServerListAdapter extends BaseAdapter {
     }
 
     public static final class Item extends Row {
-        public final String serverName;
         public final String serverId;
+        public final String serverName;
 
         public Item(String serverName, String serverId) {
             this.serverName = serverName;
@@ -59,31 +60,41 @@ public class ServerListAdapter extends BaseAdapter {
         if (getItemViewType(position) == 0) {
             if(view == null) {
                 LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = (LinearLayout) inflater.inflate(R.layout.listview_server_list_item, parent, false);
+                view = inflater.inflate(R.layout.listview_server_list_item, parent, false);
             }
 
             Item item = (Item) getItem(position);
 
             if(item != null) {
-                TextView dtcCode = view.findViewById(R.id.serverName);
-                dtcCode.setText(item.serverName);
-                TextView dtcMessage = view.findViewById(R.id.serverId);
-                dtcMessage.setText(item.serverId);
+                TextView serverName = view.findViewById(R.id.serverName);
+                serverName.setText(item.serverName);
+                TextView serverId = view.findViewById(R.id.serverId);
+                serverId.setText(item.serverId);
             }
         } else {
             if(view == null) {
                 LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = (LinearLayout) inflater.inflate(R.layout.listview_server_list_title, parent, false);
+                view = inflater.inflate(R.layout.listview_server_list_title, parent, false);
             }
 
             Title title = (Title) getItem(position);
 
             if(title != null) {
-                TextView textView = (TextView) view.findViewById(R.id.resultTitle);
-                textView.setText(title.text);
+                TextView resultTitle = view.findViewById(R.id.resultTitle);
+                resultTitle.setText(title.text);
             }
         }
 
+/*
+        Switch instanceOnOff = view.findViewById(R.id.instanceOnOff);
+
+        instanceOnOff.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Toast.makeText(context, "click switch view", Toast.LENGTH_SHORT).show();
+                }
+        });
+*/
         return view;
     }
 

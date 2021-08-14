@@ -14,7 +14,7 @@
     <string name="udt_os_use">http://210.216.61.151:12080/user/os</string>
     <string name="join">http://210.216.61.151:12080/user/join</string>
     <string name="send_mail">http://210.216.61.151:12080/auth/mail</string>
-
+    <string name="udt_os">http://210.216.61.151:12080/user/os</string>
 
     <!--===========================
         ActivityHelper activity
@@ -62,6 +62,7 @@
     <!--===========================
         MainActivity
     ==============================-->
+    <string name="server_list_msg">서버 리스트를 작성하고 있습니다</string>
 
     <!--===========================
         HttpUtil
