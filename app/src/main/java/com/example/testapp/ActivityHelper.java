@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -228,6 +230,29 @@ public abstract class ActivityHelper extends FragmentActivity {
         private void showGuide() {
             toast = Toast.makeText(activity, getString(R.string.back_press_close_message), Toast.LENGTH_SHORT);
             toast.show();
+        }
+    }
+
+    public void statusbarVisibility(boolean setVisibility){
+        if(setVisibility){
+            if (Build.VERSION.SDK_INT < 16) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            else {
+                View decorView = getWindow().getDecorView();
+                int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+                decorView.setSystemUiVisibility(uiOptions);
+            }
+        }else{
+            if (Build.VERSION.SDK_INT < 16) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            else {
+                View decorView = getWindow().getDecorView();
+                int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                decorView.setSystemUiVisibility(uiOptions);
+            }
         }
     }
 }

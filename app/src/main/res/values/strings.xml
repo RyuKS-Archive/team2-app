@@ -27,7 +27,9 @@
     <string name="team_logo">Bono 2 Team</string>
     <string name="network_enable_alert_msg">네트워크 연결 상태를 확인해 주세요</string>
     <string name="description_ok">확인</string>
+    <string name="description_cancel">취소</string>
     <string name="internal_server_error">에러가 발생했습니다, 관리자에게 문의하여 주세요</string>
+    <string name="com_loading_msg">서버에서 정보를 받아오고 있습니다</string>
 
     <!--===========================
         SplashActivity
@@ -62,12 +64,25 @@
     <!--===========================
         MainActivity
     ==============================-->
+    <string name="get_auth_token_msg">토큰 정보를 작성하고 있습니다</string>
     <string name="server_list_msg">서버 리스트를 작성하고 있습니다</string>
+    <string name="server_create_msg">인스턴스 생성</string>
+    <string name="server_start_msg">인스턴스 시작</string>
+    <string name="server_stop_msg">인스턴스 종료</string>
+    <string name="expire_dt">토큰 만료 기한</string>
+    <string name="no_exist_msg">서버 정보가 존재하지 않습니다 \n먼저 서버를 생성해 주세요</string>
+    <string name="created_server">서버를 생성하였습니다</string>
+    <string name="renew_notice_msg">토큰 갱신은 만료 10분 전부터 가능합니다</string>
 
     <!--===========================
         HttpUtil
     ==============================-->
     <string name="project">9d7d000a324f4de5908c079117f8da76</string>
     <string name="role">f6a1d237267c467c898938796aa0b16f</string>
+
+    <!--===========================
+        ServerListAdapter
+    ==============================-->
+    <string name="server_stop_alert_msg">전원 끔</string>
 
 </resources>

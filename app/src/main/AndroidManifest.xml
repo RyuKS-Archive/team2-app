@@ -41,6 +41,10 @@
         <activity android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
+        <activity android:name=".CreateProcedureActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
     </application>
 
 </manifest>

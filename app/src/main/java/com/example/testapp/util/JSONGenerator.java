@@ -40,7 +40,7 @@ public class JSONGenerator {
         Log.e("httputl", "create server START!");
 
         try {
-            server.put("name", "new-server-test");
+            server.put("name", values.getAsString("instanceName"));
             //server.put("imageRef", "61ffc40a-7028-4163-bcb6-188672deaf4e");
             server.put("imageRef", "89d601e6-1a32-4ad4-a546-d4d79d4d4156");
             server.put("flavorRef", "0");
@@ -62,4 +62,41 @@ public class JSONGenerator {
         return jsonObject.toString();
     }
 
+    /* start server
+        {
+            "os-start" : null
+        }
+     */
+    public String os_StartServer() {
+        JSONObject jsonObject = new JSONObject();
+
+        Log.e("httputl", "start server START!");
+
+        try {
+            jsonObject.put("os-start", "null");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject.toString();
+    }
+
+    /* stop server
+        {
+            "os-stop" : null
+        }
+     */
+    public String os_StopServer() {
+        JSONObject jsonObject = new JSONObject();
+
+        Log.e("httputl", "stop server START!");
+
+        try {
+            jsonObject.put("os-stop", "null");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject.toString();
+    }
 }

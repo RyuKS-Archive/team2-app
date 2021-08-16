@@ -5,35 +5,9 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/body"
-        android:paddingStart="8dp"
+        android:paddingStart="15dp"
+        android:layout_width="0dp"
         android:gravity="center|start"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8">
-
-        <TextView
-            android:id="@+id/serverName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/nomalText">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/serverId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:paddingEnd="12dp"
-        android:layout_width="0dp"
-        android:gravity="end|center"
         android:layout_weight="2"
         android:layout_height="match_parent">
 
@@ -45,6 +19,47 @@
             android:thumb="@drawable/switch_thumb_selector">
 
         </Switch>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingStart="8dp"
+        android:gravity="center|start"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8">
+
+        <TextView
+            android:id="@+id/serverName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/nomalTextGray">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/serverId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/smallText">
+
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingEnd="12dp"
+        android:layout_width="0dp"
+        android:gravity="end|center"
+        android:layout_weight="2"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/serverDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/nomalText"
+            android:text="⨉" />
 
     </LinearLayout>
 </LinearLayout>

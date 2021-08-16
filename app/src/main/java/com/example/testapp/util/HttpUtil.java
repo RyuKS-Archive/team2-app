@@ -111,9 +111,9 @@ public class HttpUtil {
 
             BufferedReader reader = null;
             responseCode = conn.getResponseCode();
+            Log.e("HttpUtil", "response code : " + responseCode);
             //if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
             if (responseCode >= HTTP_ERR) {
-                Log.e("HttpUtil", "response code : " + responseCode);
                 reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
             } else {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -161,6 +161,7 @@ public class HttpUtil {
 
         HttpURLConnection conn = null;
         ContentValues response = null;
+        BufferedReader reader = null;
 
         JSONObject responseDate = null;
         JSONObject jsonObject = new JSONObject();
@@ -278,6 +279,7 @@ public class HttpUtil {
 
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json");
+            conn.setConnectTimeout(10000);
 
             String strJson = jsonObject.toString();
             Log.e("httputil","json : "+ strJson);
@@ -288,11 +290,10 @@ public class HttpUtil {
             os.close();
 
             response = new ContentValues();
+
             int response_code = conn.getResponseCode();
             response.put("response_code", response_code);
             Log.e("httputil", "Response Code : " + response_code);
-
-            if(response_code >= HTTP_ERR) return response;
 
             Map<String, List<String>> responseHeader = conn.getHeaderFields();
             Iterator<String> headerIt = responseHeader.keySet().iterator();
@@ -314,26 +315,40 @@ public class HttpUtil {
                 Log.e("httputil","--------header end--------");
             }
 
-            try{
-                Log.e("httputil","--------json parse--------");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+
                 StringBuilder result = new StringBuilder();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
-                JSONObject resJson = new JSONObject(result.toString());
 
                 Log.e("httputil","result : " + result.toString());
-                JSONObject token = resJson.getJSONObject("token");
-                String expires_at = token.getString("expires_at");
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-                response = new ContentValues();
-                response.put("authToken", OS_TOKEN);
-                response.put("expires_at", expires_at);
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
 
-            }catch(JSONException e) {
-                e.printStackTrace();
+                Log.e("httputil","result : " + result.toString());
+
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+
+                    JSONObject token = resJson.getJSONObject("token");
+                    String expires_at = token.getString("expires_at");
+
+                    response = new ContentValues();
+                    response.put("authToken", OS_TOKEN);
+                    response.put("expires_at", expires_at);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             return response;
@@ -350,11 +365,11 @@ public class HttpUtil {
     }
 
     public ContentValues openstack_getAuthScopeToken(String OS_TOKEN) {
-
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/auth/tokens?nocatalog";
 
         HttpURLConnection conn = null;
         ContentValues response = null;
+        BufferedReader reader = null;
 
         JSONObject jsonObject = new JSONObject();
         JSONObject auth = new JSONObject();
@@ -409,6 +424,7 @@ public class HttpUtil {
 
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json");
+            conn.setConnectTimeout(10000);
 
             String strJson = jsonObject.toString();
             Log.e("httputil","json : "+ strJson);
@@ -418,12 +434,11 @@ public class HttpUtil {
             os.flush();
             os.close();
 
-            if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                String code = Integer.toString(conn.getResponseCode());
-                Log.e("httputil", "Response Code : " + code);
+            response = new ContentValues();
 
-                return null;
-            }
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
 
             Map<String, List<String>> responseHeader = conn.getHeaderFields();
             Iterator<String> headerIt = responseHeader.keySet().iterator();
@@ -445,27 +460,41 @@ public class HttpUtil {
                 Log.e("httputil","--------header end--------");
             }
 
-            try{
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            //if(conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+
                 StringBuilder result = new StringBuilder();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
-                JSONObject resJson = new JSONObject(result.toString());
 
                 Log.e("httputil","result : " + result.toString());
-                JSONObject restoken = resJson.getJSONObject("token");
-                String expires_at = restoken.getString("expires_at");
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-                Log.e("httputil","expires_at : "+ expires_at);
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
 
-                response = new ContentValues();
-                response.put("authToken", OS_TOKEN);
-                response.put("expires_at", expires_at);
+                Log.e("httputil","result : " + result.toString());
 
-            }catch(JSONException e) {
-                e.printStackTrace();
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+
+                    JSONObject restoken = resJson.getJSONObject("token");
+                    String expires_at = restoken.getString("expires_at");
+
+                    //response = new ContentValues();
+                    response.put("authToken", OS_TOKEN);
+                    response.put("expires_at", expires_at);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             return response;
@@ -503,6 +532,7 @@ public class HttpUtil {
 
         HttpURLConnection conn = null;
         ContentValues response = null;
+        BufferedReader reader = null;
 
         JSONObject responseData = null;
         JSONObject jsonObject = new JSONObject();
@@ -577,6 +607,7 @@ public class HttpUtil {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json");
             conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(10000);
             Log.e("httputil","OS_TOKEN : "+ OS_TOKEN);
 
             String strJson = jsonObject.toString();
@@ -588,40 +619,49 @@ public class HttpUtil {
             os.close();
 
             response = new ContentValues();
+
             int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
 
-            if(response_code != HttpURLConnection.HTTP_CREATED) {
-                Log.e("httputil", "Response Code : " + response_code);
-                response.put("response_code", response_code);
+            //if(response_code != HttpURLConnection.HTTP_CREATED) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
 
-                return response;
-            }
-
-            try{
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder result = new StringBuilder();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
-                JSONObject resJson = new JSONObject(result.toString());
+
+                Log.e("httputil","result : " + result.toString());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
 
                 Log.e("httputil","result : " + result.toString());
 
-                JSONObject token = resJson.getJSONObject("user");
-                //String p_id = token.getString("default_project_id") == null? "" : token.getString("default_project_id");
-                String d_id = token.getString("domain_id");
-                String u_id = token.getString("id");
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
 
-                Log.e("httputil","response :" + d_id + ":" + u_id);
+                    JSONObject token = resJson.getJSONObject("user");
+                    //String p_id = token.getString("default_project_id") == null? "" : token.getString("default_project_id");
+                    String d_id = token.getString("domain_id");
+                    String u_id = token.getString("id");
 
-                response.put("response_code", response_code);
-                //response.put("project_id", p_id);
-                response.put("domain_id", d_id);
-                response.put("user_id", u_id);
+                    //response.put("response_code", response_code);
+                    //response.put("project_id", p_id);
+                    response.put("domain_id", d_id);
+                    response.put("user_id", u_id);
 
-            }catch(JSONException e) {
-                e.printStackTrace();
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             return response;
@@ -638,10 +678,11 @@ public class HttpUtil {
     }
 
     public HashMap openstack_ServerList(String authToken) {
-        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers";
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers/detail";
         String OS_TOKEN = authToken;
 
         HttpURLConnection conn = null;
+        BufferedReader reader = null;
         HashMap response = null;
 
         Log.e("httputl", "server list START!");
@@ -653,9 +694,9 @@ public class HttpUtil {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Type","application/json");
             conn.setRequestProperty("X-Auth-Token", OS_TOKEN);
+            conn.setConnectTimeout(10000);
 
             Log.e("httputil","OS_TOKEN : " + OS_TOKEN);
-
 
             int response_code = conn.getResponseCode();
             response = new HashMap();
@@ -663,40 +704,53 @@ public class HttpUtil {
 
             Log.e("httputil", "Response Code : " + response_code);
 
-            if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return response;
-            }
+            //if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
 
-            try{
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder result = new StringBuilder();
-
                 String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
 
+                Log.e("httputil","result : " + result.toString());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
 
                 Log.e("httputil","result : " + result.toString());
 
-                JSONObject resJson = new JSONObject(result.toString());
-                JSONArray resServerArr = resJson.getJSONArray("servers");
-                ArrayList<ContentValues> serverList = new ArrayList<>();
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+                    JSONArray resServerArr = resJson.getJSONArray("servers");
+                    ArrayList<ContentValues> serverList = new ArrayList<>();
 
-                for (int idx = 0 ; idx < resServerArr.length() ; idx++) {
-                    JSONObject server = resServerArr.getJSONObject(idx);
-                    ContentValues tmpValue = new ContentValues();
+                    for (int idx = 0 ; idx < resServerArr.length() ; idx++) {
+                        JSONObject server = resServerArr.getJSONObject(idx);
+                        ContentValues tmpValue = new ContentValues();
 
-                    tmpValue.put("id", server.getString("id"));
-                    tmpValue.put("name", server.getString("name"));
+                        tmpValue.put("id", server.getString("id"));
+                        tmpValue.put("name", server.getString("name"));
+                        tmpValue.put("status", server.getString("status"));
+                        tmpValue.put("hostId", server.getString("hostId"));
+                        tmpValue.put("tenant_id", server.getString("tenant_id"));
+                        tmpValue.put("updated", server.getString("updated"));
+                        tmpValue.put("created", server.getString("created"));
 
-                    serverList.add(tmpValue);
+                        serverList.add(tmpValue);
+                    }
+
+                    response.put("server_list", serverList);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
                 }
-
-                response.put("server_list", serverList);
-
-            }catch(JSONException e) {
-                e.printStackTrace();
             }
 
             return response;
@@ -722,6 +776,7 @@ public class HttpUtil {
 
         HttpURLConnection conn = null;
         ContentValues response = null;
+        BufferedReader reader = null;
 
         JSONGenerator jsonGenerator = new JSONGenerator();
 
@@ -732,6 +787,7 @@ public class HttpUtil {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json");
             conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(10000);
             Log.e("httputil","OS_TOKEN : "+ OS_TOKEN);
 
             String strJson = jsonGenerator.os_CreateServer(values);
@@ -743,31 +799,27 @@ public class HttpUtil {
             os.close();
 
             response = new ContentValues();
-            int response_code = conn.getResponseCode();
 
+            int response_code = conn.getResponseCode();
             response.put("response_code", response_code);
-            if(response_code != HttpURLConnection.HTTP_ACCEPTED) {
-                Log.e("httputil", "Response Code : " + response_code);
-                return response;
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(response_code != HttpURLConnection.HTTP_ACCEPTED) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             }
 
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            Log.e("httputil","result : " + result.toString());
+
             try{
-                BufferedReader reader = null;
-                if (response_code >= HTTP_ERR) {
-                    reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
-                } else {
-                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                }
-
-                StringBuilder result = new StringBuilder();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                Log.e("httputil","result : " + result.toString());
-
                 JSONObject resJson = new JSONObject(result.toString());
                 JSONObject resServer = resJson.getJSONObject("server");
                 //String diskConfig = resServer.getString("OS-DCF:diskConfig");
@@ -794,6 +846,192 @@ public class HttpUtil {
         return null;
     }
 
+    public ContentValues openstack_StartServer(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers/" + values.getAsString("id") + "/action";
+
+        HttpURLConnection conn = null;
+        ContentValues response = null;
+        BufferedReader reader = null;
+
+        JSONGenerator jsonGenerator = new JSONGenerator();
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(20000);
+            Log.e("httputil","OS_AUTH_URL : "+ OS_AUTH_URL);
+
+            String strJson = jsonGenerator.os_StartServer();
+            Log.e("httputil","json : "+ strJson);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(strJson.getBytes("UTF-8"));
+            os.flush();
+            os.close();
+
+            response = new ContentValues();
+
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(response_code != HttpURLConnection.HTTP_ACCEPTED) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            }
+
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            Log.e("httputil","result : " + result.toString());
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+        return null;
+    }
+
+    public ContentValues openstack_StopServer(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers/" + values.getAsString("id") + "/action";
+
+        HttpURLConnection conn = null;
+        ContentValues response = null;
+        BufferedReader reader = null;
+
+        JSONGenerator jsonGenerator = new JSONGenerator();
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(20000);
+            Log.e("httputil","OS_AUTH_URL : "+ OS_AUTH_URL);
+
+            String strJson = jsonGenerator.os_StopServer();
+            Log.e("httputil","json : "+ strJson);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(strJson.getBytes("UTF-8"));
+            os.flush();
+            os.close();
+
+            response = new ContentValues();
+
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(response_code != HttpURLConnection.HTTP_ACCEPTED) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            }
+
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            Log.e("httputil","result : " + result.toString());
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
+    public ContentValues openstack_DeleteServer(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/servers/" + values.getAsString("id");
+
+        HttpURLConnection conn = null;
+        ContentValues response = null;
+        BufferedReader reader = null;
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("DELETE");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(10000);
+            Log.e("httputil","OS_AUTH_URL : "+ OS_AUTH_URL);
+
+            response = new ContentValues();
+
+            int response_code = conn.getResponseCode();
+            response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(response_code != HttpURLConnection.HTTP_NO_CONTENT) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            }
+
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            Log.e("httputil","result : " + result.toString());
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+        return null;
+    }
+
     public String openstack_AddRole(ContentValues values) {
         if(values == null) {
             return null;
@@ -805,7 +1043,7 @@ public class HttpUtil {
         String OS_AUTH_URL = "http://210.216.61.151:12050/v3/projects/" + project_id + "/users/" + values.getAsString("user_id") + "/roles/" + role_id;
         String OS_TOKEN = values.get("OS_TOKEN").toString();
         HttpURLConnection conn = null;
-        ContentValues response = null;
+        BufferedReader reader = null;
 
         Log.e("httputl", "Add Role START!");
 
@@ -816,21 +1054,29 @@ public class HttpUtil {
             conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type","application/json");
             conn.setRequestProperty("X-Auth-Token",OS_TOKEN);
+            conn.setConnectTimeout(10000);
 
             //Log.e("httputil","OS_TOKEN : "+ OS_TOKEN);
             Log.e("httputil","url : "+ OS_AUTH_URL);
 
             int response_code = conn.getResponseCode();
-            if(response_code != HttpURLConnection.HTTP_NO_CONTENT) {
-                Log.e("httputil", "Response Code : " + response_code);
-                //response.put("response_code", response_code);
+            Log.e("httputil", "Response Code : " + response_code);
 
-                return Integer.toString(response_code);
+            //if(response_code != HttpURLConnection.HTTP_NO_CONTENT) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             }
 
-            //response.put("response_code", response_code);
+            StringBuilder result = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
 
-            Log.e("httputil", "Response Code : " + response_code);
+            Log.e("httputil","result : " + result.toString());
+
             return Integer.toString(response_code);
         } catch (MalformedURLException e) {
             e.printStackTrace();
