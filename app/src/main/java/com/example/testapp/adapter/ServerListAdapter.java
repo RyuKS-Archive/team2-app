@@ -39,12 +39,14 @@ public class ServerListAdapter extends BaseAdapter {
     public static final class Item extends Row {
         public final String serverId;
         public final String serverName;
+        public final String tenantId;
         public boolean isRunning;
 
-        public Item(String serverName, String serverId, boolean isRunning) {
+        public Item(String serverName, String serverId, String tenantId, boolean isRunning) {
             this.serverName = serverName;
             this.serverId = serverId;
             this.isRunning = isRunning;
+            this.tenantId = tenantId;
         }
     }
 
@@ -83,6 +85,8 @@ public class ServerListAdapter extends BaseAdapter {
                 serverName.setText(item.serverName);
                 TextView serverId = view.findViewById(R.id.serverId);
                 serverId.setText(item.serverId);
+                TextView tenantId = view.findViewById(R.id.tenantId);
+                tenantId.setText(item.tenantId);
                 TextView serverDeleteTxt = view.findViewById(R.id.serverDelete);
                 //serverDeleteTxt.setTextColor(Color.parseColor("#000000"));
 
@@ -93,6 +97,20 @@ public class ServerListAdapter extends BaseAdapter {
                 } else {
                     instanceOnOff.setChecked(false);
                 }
+
+                serverName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallback.showUsageStatistics(serverName.getText().toString(), tenantId.getText().toString());
+                    }
+                });
+
+                serverId.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallback.showUsageStatistics(serverName.getText().toString(), tenantId.getText().toString());
+                    }
+                });
 
                 instanceOnOff.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
                     @Override

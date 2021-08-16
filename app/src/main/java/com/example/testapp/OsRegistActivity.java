@@ -90,8 +90,12 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
                     result = httputil.openstack_AddRole(add_role);
 
                     if (result.equals(HTTP_NO_CONTENT)) {
-                        //HttpUtil httputil = new HttpUtil(url, "POST");
-                        response = httputil.request(values);
+                        ContentValues os_use_udt = new ContentValues();
+                        os_use_udt.put("email", values.get("email").toString().split("@")[0]);
+                        //os_use_udt.put("password", values.get("password").toString());
+
+                        httputil.setUrl(url);
+                        response = httputil.request(os_use_udt);
                     }
                 }
             }

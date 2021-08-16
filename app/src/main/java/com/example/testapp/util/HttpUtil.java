@@ -38,6 +38,10 @@ public class HttpUtil {
         this.httpMethod = httpMethod;
     }
 
+    public void setUrl(String pageUrl) {
+        this.pageUrl = pageUrl;
+    }
+
     public ContentValues request (ContentValues params) {
         HttpURLConnection conn = null;
         StringBuffer sbParams = new StringBuffer();
@@ -747,6 +751,88 @@ public class HttpUtil {
                     }
 
                     response.put("server_list", serverList);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
+    public ContentValues openstack_UsageStatistics(ContentValues values) {
+        if(values == null) {
+            return null;
+        }
+
+        String OS_TOKEN = values.getAsString("OS_TOKEN");
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/os-simple-tenant-usage/" + values.getAsString("tenantId");
+
+        HttpURLConnection conn = null;
+        BufferedReader reader = null;
+        ContentValues response = null;
+
+        Log.e("httputl", "Usage Statistics START!");
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token", OS_TOKEN);
+            conn.setConnectTimeout(10000);
+
+            Log.e("httputil","OS_AUTH_URL : " + OS_AUTH_URL);
+
+            int response_code = conn.getResponseCode();
+            response = new ContentValues();
+            response.put("response_code", response_code);
+
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+                    JSONObject tenant_usage = resJson.getJSONObject("tenant_usage");
+
+                    response.put("start", tenant_usage.getString("start"));
+                    response.put("stop", tenant_usage.getString("stop"));
+                    response.put("total_hours", tenant_usage.getString("total_hours"));
+                    response.put("total_local_gb_usage", tenant_usage.getString("total_local_gb_usage"));
+                    response.put("total_memory_mb_usage", tenant_usage.getString("total_memory_mb_usage"));
+                    response.put("total_vcpus_usage", tenant_usage.getString("total_vcpus_usage"));
 
                 }catch(JSONException e) {
                     e.printStackTrace();

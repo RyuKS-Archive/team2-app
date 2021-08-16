@@ -14,6 +14,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.testapp.util.HttpUtil;
 
@@ -98,7 +99,7 @@ public class LoginFormActivity extends ActivityHelper implements OnTouchListener
                 //{"errorCode":"E0001","errorMessage":"No value present"}
                 gotoNextActivity(JoinFormActivity.class, values);
             } else {
-                //internal server error 500
+                Toast.makeText(LoginFormActivity.this, getString(R.string.internal_server_error), Toast.LENGTH_SHORT).show();
             }
 
             /*

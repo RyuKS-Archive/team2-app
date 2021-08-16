@@ -45,6 +45,10 @@
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
+        <activity android:name=".ShowUsageStatisticsActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
     </application>
 
 </manifest>

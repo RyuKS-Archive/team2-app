@@ -91,6 +91,17 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         networkTask.execute();
     }
 
+    @Override
+    public void showUsageStatistics (String serverName, String tenantId) {
+        Intent intent = new Intent(this, ShowUsageStatisticsActivity.class);
+        intent.putExtra("OS_TOKEN", OS_TOKEN);
+        intent.putExtra("serverName", serverName);
+        intent.putExtra("tenantId", tenantId);
+
+        startActivity(intent);
+    }
+
+
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private ContentValues values;
         private ContentValues response;
@@ -162,7 +173,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     progressBar.show();
 
                     break;
-                case 5:
+                case 5: // SHOW USAGE STATISTICS
                     break;
                 default:
                     ;
@@ -260,7 +271,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     }
 
                     break;
-                case 5:
+                case 5: // SHOW USAGE STATISTICS
                     break;
                 default:
                     ;
@@ -331,7 +342,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     if (response.getAsInteger("response_code") >= HTTP_ERROR) {
                         Toast.makeText(MainActivity.this, getString(R.string.internal_server_error), Toast.LENGTH_SHORT).show();
 
-                        //에러 발생시만 체크 값 되돌리기 위해 리스트 갱신
+                        //에러 발생시 체크 값 되돌리기 위해 리스트 갱신
                         ContentValues taskCode3 = new ContentValues();
                         taskCode3.put("taskCode", 1);
 
@@ -340,8 +351,6 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     } else {
 
                     }
-
-
 
                     break;
                 case 4: // DELETE SERVER
@@ -358,7 +367,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     networkTask.execute();
 
                     break;
-                case 5:
+                case 5: // SHOW USAGE STATISTICS
                     break;
                 default:
                     ;
@@ -384,7 +393,7 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     isRunning = false;
                 }
 
-                rows.add(new ServerListAdapter.Item(result.getAsString("name"), result.getAsString("id"), isRunning));
+                rows.add(new ServerListAdapter.Item(result.getAsString("name"), result.getAsString("id"), result.getAsString("tenant_id"), isRunning));
 
             }
 
