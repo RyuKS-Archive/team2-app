@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/head1"
+            android:gravity="center|top"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:gravity="center|top"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#DF7401"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:id="@+id/descriptText1"
+                    android:paddingStart="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:textColor="#FFFFFF"
+                    android:text="" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/closePopUp"
+                    android:paddingEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:textColor="#FFFFFF"
+                    android:text="⨉" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head2"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/descriptText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/nomalTextNavy"
+                android:text="총 사용시간" />
+
+            <TextView
+                android:id="@+id/total_hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/smallText"
+                android:text="" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/body1"
+            android:gravity="center|start"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/descriptText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/nomalTextNavy"
+                android:text="총 CPU 사용량" />
+
+            <TextView
+                android:id="@+id/total_vcpus_usage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/smallText"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/body2"
+            android:gravity="center|start"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/descriptText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/nomalTextNavy"
+                android:text="총 메모리 사용량" />
+
+            <TextView
+                android:id="@+id/total_memory_mb_usage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/smallText"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/body3"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bottom"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0"
+            android:gravity="center|bottom">
+
+            <TextView
+                android:id="@+id/teamLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:textSize="15dp"
+                android:text="@string/team_logo" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
