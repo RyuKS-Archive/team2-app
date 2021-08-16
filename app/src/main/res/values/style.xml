@@ -33,6 +33,9 @@
     <style name="nomalTextNavy" parent="nomalText">
         <item name="android:textColor">#0B3861</item>
     </style>
+    <style name="nomalTextOrange" parent="nomalText">
+        <item name="android:textColor">#DF7401</item>
+    </style>
 
     <style name="smallText" parent="warp_default">
         <item name="android:textSize">10sp</item>

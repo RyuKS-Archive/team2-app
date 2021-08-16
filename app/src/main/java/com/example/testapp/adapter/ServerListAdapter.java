@@ -3,7 +3,7 @@ package com.example.testapp.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +12,18 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import com.example.testapp.R;
-import com.example.testapp.common.OnItemCheckedChange;
+import com.example.testapp.common.CallBackListener;
 
 import java.util.List;
 
 public class ServerListAdapter extends BaseAdapter {
     public static abstract class Row {}
     private List<Row> rows;
-    private OnItemCheckedChange mCallback;
+    private CallBackListener mCallback;
     private Context context;
     private boolean cancelFlg = false;
 
-    public ServerListAdapter(OnItemCheckedChange mCallback) {
+    public ServerListAdapter(CallBackListener mCallback) {
         this.context = (Context) mCallback;
         this.mCallback = mCallback;
     }
@@ -83,6 +83,8 @@ public class ServerListAdapter extends BaseAdapter {
                 serverName.setText(item.serverName);
                 TextView serverId = view.findViewById(R.id.serverId);
                 serverId.setText(item.serverId);
+                TextView serverDeleteTxt = view.findViewById(R.id.serverDelete);
+                //serverDeleteTxt.setTextColor(Color.parseColor("#000000"));
 
                 Switch instanceOnOff = view.findViewById(R.id.instanceOnOff);
 
@@ -97,13 +99,13 @@ public class ServerListAdapter extends BaseAdapter {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (!isChecked) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(context);
-                            ab.setMessage(serverName.getText() + "의 전원 끔을 최종 확인합니다");
+                            ab.setMessage(serverName.getText() + context.getString(R.string.server_stop_alert_msg));
                             ab.setIcon(android.R.drawable.ic_dialog_alert);
                             ab.setCancelable(false);
-                            ab.setPositiveButton(R.string.server_stop_alert_msg, new DialogInterface.OnClickListener() {
+                            ab.setPositiveButton(R.string.server_stop_btn_msg, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    mCallback.onItemCheckedChange(isChecked, serverId.getText().toString());
+                                    mCallback.changeServerStatus(isChecked, serverId.getText().toString());
                                 }
                             });
                             ab.setNegativeButton(R.string.description_cancel, new DialogInterface.OnClickListener() {
@@ -119,9 +121,35 @@ public class ServerListAdapter extends BaseAdapter {
                             if (cancelFlg) {
                                 cancelFlg = false;
                             } else {
-                                mCallback.onItemCheckedChange(isChecked, serverId.getText().toString());
+                                mCallback.changeServerStatus(isChecked, serverId.getText().toString());
                             }
                         }
+                    }
+                });
+
+                serverDeleteTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        serverDeleteTxt.setTextColor(Color.parseColor("#DF7401"));
+
+                        AlertDialog.Builder ab = new AlertDialog.Builder(context);
+                        ab.setMessage(serverName.getText() + context.getString(R.string.server_delete_alert_msg));
+                        ab.setIcon(android.R.drawable.ic_dialog_alert);
+                        ab.setCancelable(false);
+                        ab.setPositiveButton(R.string.server_delete_btn_msg, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mCallback.deleteServer(serverId.getText().toString());
+                            }
+                        });
+                        ab.setNegativeButton(R.string.description_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                serverDeleteTxt.setTextColor(Color.parseColor("#000000"));
+                            }
+                        });
+                        ab.show();
+
                     }
                 });
             }

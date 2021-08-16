@@ -11,29 +11,55 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/head"
+            android:id="@+id/head1"
+            android:gravity="center|top"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:gravity="center|top"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#DF7401"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:id="@+id/descriptText1"
+                    android:paddingStart="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:textColor="#FFFFFF"
+                    android:text="STEP 1" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/closePopUp"
+                    android:paddingEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:textColor="#FFFFFF"
+                    android:text="⨉" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head2"
             android:gravity="center|top"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/descriptText1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/nomalTextNavy"
-                android:text="STEP 1" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/body1"
-            android:gravity="center|start"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="7">
+            android:layout_weight="2">
 
             <TextView
                 android:id="@+id/descriptText2"
@@ -46,10 +72,21 @@
                 android:id="@+id/instanceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionDone"
                 android:maxLength="15" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/body1"
+            android:gravity="center|start"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="5dp">
 
             <TextView
                 android:id="@+id/descriptText3"
@@ -58,6 +95,24 @@
                 style="@style/nomalTextNavy"
                 android:text="이미지 선택" />
 
+            <ListView
+                android:id="@+id/imageList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:choiceMode="singleChoice">
+            </ListView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/body2"
+            android:gravity="center|start"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="5dp">
+
             <TextView
                 android:id="@+id/descriptText4"
                 android:layout_width="match_parent"
@@ -65,11 +120,17 @@
                 style="@style/nomalTextNavy"
                 android:text="FLAVOR 선택" />
 
+            <ListView
+                android:id="@+id/flavorList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:choiceMode="singleChoice">
+            </ListView>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/body2"
+            android:id="@+id/body3"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -78,14 +139,14 @@
 
             <Button
                 android:id="@+id/nextBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/ripple_basic"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/ripple_orange"
                 android:textColor="@color/white"
-                android:text="생성" />
+                android:text="인스턴스 생성" />
 
         </LinearLayout>
 
@@ -95,7 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:gravity="center|bottom">
 
             <TextView

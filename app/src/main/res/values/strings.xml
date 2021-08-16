@@ -66,12 +66,14 @@
     ==============================-->
     <string name="get_auth_token_msg">토큰 정보를 작성하고 있습니다</string>
     <string name="server_list_msg">서버 리스트를 작성하고 있습니다</string>
+    <string name="server_init_msg">초기 정보를 작성하고 있습니다</string>
     <string name="server_create_msg">인스턴스 생성</string>
     <string name="server_start_msg">인스턴스 시작</string>
     <string name="server_stop_msg">인스턴스 종료</string>
     <string name="expire_dt">토큰 만료 기한</string>
     <string name="no_exist_msg">서버 정보가 존재하지 않습니다 \n먼저 서버를 생성해 주세요</string>
-    <string name="created_server">서버를 생성하였습니다</string>
+    <string name="created_server">인스턴스가 생성되었습니다</string>
+    <string name="deleted_server">인스턴스가 삭제되었습니다</string>
     <string name="renew_notice_msg">토큰 갱신은 만료 10분 전부터 가능합니다</string>
 
     <!--===========================
@@ -83,6 +85,9 @@
     <!--===========================
         ServerListAdapter
     ==============================-->
-    <string name="server_stop_alert_msg">전원 끔</string>
+    <string name="server_stop_btn_msg">전원 끔</string>
+    <string name="server_delete_btn_msg">인스턴스 삭제</string>
+    <string name="server_stop_alert_msg">의 전원 끔을 최종 확인합니다</string>
+    <string name="server_delete_alert_msg">의 삭제를 최종 확인합니다 \n삭제된 인스턴스는 복구 불가능합니다</string>
 
 </resources>

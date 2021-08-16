@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.testapp.common.CheckableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:paddingStart="8dp"
+        android:gravity="center|start"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8">
+
+        <TextView
+            android:id="@+id/flavorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/nomalTextGray">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/flavorId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            style="@style/smallText">
+
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingEnd="12dp"
+        android:layout_width="0dp"
+        android:gravity="end|center"
+        android:layout_weight="2"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:id="@+id/enable" />
+
+    </LinearLayout>
+</com.example.testapp.common.CheckableLinearLayout>

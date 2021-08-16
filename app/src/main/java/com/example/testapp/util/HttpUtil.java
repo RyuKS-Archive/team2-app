@@ -766,6 +766,175 @@ public class HttpUtil {
         return null;
     }
 
+    public HashMap openstack_FlavorList(String authToken) {
+        String OS_AUTH_URL = "http://210.216.61.151:12874/v2.1/flavors";
+        String OS_TOKEN = authToken;
+
+        HttpURLConnection conn = null;
+        BufferedReader reader = null;
+        HashMap response = null;
+
+        Log.e("httputl", "FLAVOR LIST START!");
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token", OS_TOKEN);
+            conn.setConnectTimeout(10000);
+
+            Log.e("httputil","OS_TOKEN : " + OS_TOKEN);
+
+            int response_code = conn.getResponseCode();
+            response = new HashMap();
+            response.put("response_code", response_code);
+
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+                    JSONArray resServerArr = resJson.getJSONArray("flavors");
+                    ArrayList<ContentValues> flavorList = new ArrayList<>();
+
+                    for (int idx = 0 ; idx < resServerArr.length() ; idx++) {
+                        JSONObject flavor = resServerArr.getJSONObject(idx);
+                        ContentValues tmpValue = new ContentValues();
+
+                        tmpValue.put("id", flavor.getString("id"));
+                        tmpValue.put("name", flavor.getString("name"));
+
+                        flavorList.add(tmpValue);
+                    }
+
+                    response.put("flavor_list", flavorList);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
+    public HashMap openstack_ImageList(String authToken) {
+        String OS_AUTH_URL = "http://210.216.61.151:12092/v2/images";
+        String OS_TOKEN = authToken;
+
+        HttpURLConnection conn = null;
+        BufferedReader reader = null;
+        HashMap response = null;
+
+        Log.e("httputl", "FLAVOR LIST START!");
+
+        try{
+            URL url = new URL(OS_AUTH_URL);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.setRequestProperty("X-Auth-Token", OS_TOKEN);
+            conn.setConnectTimeout(10000);
+
+            Log.e("httputil","OS_TOKEN : " + OS_TOKEN);
+
+            int response_code = conn.getResponseCode();
+            response = new HashMap();
+            response.put("response_code", response_code);
+
+            Log.e("httputil", "Response Code : " + response_code);
+
+            //if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (response_code >= HTTP_ERR) {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                StringBuilder result = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.e("httputil","result : " + result.toString());
+
+                try{
+                    JSONObject resJson = new JSONObject(result.toString());
+                    JSONArray resServerArr = resJson.getJSONArray("images");
+                    ArrayList<ContentValues> imageList = new ArrayList<>();
+
+                    for (int idx = 0 ; idx < resServerArr.length() ; idx++) {
+                        JSONObject flavor = resServerArr.getJSONObject(idx);
+                        ContentValues tmpValue = new ContentValues();
+
+                        tmpValue.put("id", flavor.getString("id"));
+                        tmpValue.put("name", flavor.getString("name"));
+                        tmpValue.put("status", flavor.getString("status"));
+
+                        imageList.add(tmpValue);
+                    }
+
+                    response.put("image_list", imageList);
+
+                }catch(JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return response;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+        }
+
+        return null;
+    }
+
     public ContentValues openstack_CreateServer(ContentValues values) {
         if(values == null) {
             return null;

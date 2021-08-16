@@ -3,33 +3,28 @@ package com.example.testapp;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testapp.adapter.ServerListAdapter;
-import com.example.testapp.common.OnItemCheckedChange;
+import com.example.testapp.common.CallBackListener;
 import com.example.testapp.util.HttpUtil;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends ActivityHelper implements View.OnTouchListener, OnItemCheckedChange {
+public class MainActivity extends ActivityHelper implements View.OnTouchListener, CallBackListener {
     private final int HTTP_ERROR = 400;
     private String OS_TOKEN = null;
     private CountDownTimer expireTimer = null;
@@ -67,7 +62,13 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
     }
 
     @Override
-    public void onItemCheckedChange (boolean status, String id){
+    protected void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
+    public void changeServerStatus (boolean status, String id){
         // START AND STOP SERVER
         ContentValues tmpValue = new ContentValues();
 
@@ -79,11 +80,23 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
         networkTask.execute();
     }
 
+    @Override
+    public void deleteServer (String id) {
+        ContentValues tmpValue = new ContentValues();
+
+        tmpValue.put("taskCode", 4);
+        tmpValue.put("id", id);
+
+        NetworkTask networkTask = new NetworkTask(tmpValue);
+        networkTask.execute();
+    }
+
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private ContentValues values;
         private ContentValues response;
         private HashMap responseMap;
         private ServerListAdapter adapter = new ServerListAdapter(MainActivity.this);
+        private NetworkTask networkTask = null;
         private ProgressDialog progressBar;
 
         public NetworkTask(ContentValues values) {
@@ -138,7 +151,16 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                     progressBar.show();
 
                     break;
-                case 4: // GET SERVER USAGE
+                case 4: // DELETE SERVER
+                    progressBar = new ProgressDialog(MainActivity.this);
+
+                    progressBar.setCancelable(false);
+                    progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+                    progressBar.setMessage(getString(R.string.server_delete_btn_msg));
+
+                    progressBar.show();
+
                     break;
                 case 5:
                     break;
@@ -208,12 +230,35 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                             response = httputil.openstack_StopServer(tmpValue);
                         }
 
+                        try {
+                            Thread.sleep(2500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
                     } else {
 
                     }
 
                     break;
-                case 4: // GET SERVER USAGE
+                case 4: // DELETE SERVER
+                    tmpValue = new ContentValues();
+
+                    if (OS_TOKEN != null) {
+                        tmpValue.put("OS_TOKEN", OS_TOKEN);
+                        tmpValue.put("id", values.getAsString("id"));
+                        response = httputil.openstack_DeleteServer(tmpValue);
+
+                        try {
+                            Thread.sleep(2500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+
+                    }
+
                     break;
                 case 5:
                     break;
@@ -267,9 +312,10 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
 
                         if (tmpResults.size() == 0) {
                             Toast.makeText(MainActivity.this, getString(R.string.no_exist_msg), Toast.LENGTH_SHORT).show();
-                        } else {
-                            createListView(tmpResults);
                         }
+
+                        createListView(tmpResults);
+
                     }
 
                     break;
@@ -284,12 +330,33 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                 case 3: // START AND STOP SERVER
                     if (response.getAsInteger("response_code") >= HTTP_ERROR) {
                         Toast.makeText(MainActivity.this, getString(R.string.internal_server_error), Toast.LENGTH_SHORT).show();
+
+                        //에러 발생시만 체크 값 되돌리기 위해 리스트 갱신
+                        ContentValues taskCode3 = new ContentValues();
+                        taskCode3.put("taskCode", 1);
+
+                        networkTask = new NetworkTask(taskCode3);
+                        networkTask.execute();
                     } else {
-                        //Toast.makeText(MainActivity.this, getString(R.string.created_server), Toast.LENGTH_SHORT).show();
+
                     }
 
+
+
                     break;
-                case 4: // GET SERVER USAGE
+                case 4: // DELETE SERVER
+                    if (response.getAsInteger("response_code") >= HTTP_ERROR) {
+                        Toast.makeText(MainActivity.this, getString(R.string.internal_server_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.deleted_server), Toast.LENGTH_SHORT).show();
+                    }
+
+                    ContentValues taskCode4 = new ContentValues();
+                    taskCode4.put("taskCode", 1);
+
+                    networkTask = new NetworkTask(taskCode4);
+                    networkTask.execute();
+
                     break;
                 case 5:
                     break;
@@ -304,7 +371,11 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
             List<ServerListAdapter.Row> rows = new ArrayList<>();
             boolean isRunning = false;
 
-            rows.add(new ServerListAdapter.Title("서버 리스트"));
+            if (results.size() == 0) {
+                rows.add(new ServerListAdapter.Title("인스턴스 정보 없음"));
+            } else {
+                rows.add(new ServerListAdapter.Title("서버 리스트"));
+            }
 
             for (ContentValues result : results) {
                 if (result.getAsString("status").equals("ACTIVE")) {
@@ -382,16 +453,13 @@ public class MainActivity extends ActivityHelper implements View.OnTouchListener
                         ab.show();
 
                     } else {
-                        ContentValues values = new ContentValues();
-                        values.put("taskCode", 2);
+                        //ContentValues values = new ContentValues();
+                        //values.put("taskCode", 2);
 
                         Intent intent = new Intent(this, CreateProcedureActivity.class);
                         intent.putExtra("OS_TOKEN", OS_TOKEN);
 
                         startActivity(intent);
-
-                        //NetworkTask networkTask = new NetworkTask(values);
-                        //networkTask.execute();
                     }
 
                     break;

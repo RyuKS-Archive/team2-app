@@ -42,8 +42,10 @@ public class JSONGenerator {
         try {
             server.put("name", values.getAsString("instanceName"));
             //server.put("imageRef", "61ffc40a-7028-4163-bcb6-188672deaf4e");
-            server.put("imageRef", "89d601e6-1a32-4ad4-a546-d4d79d4d4156");
-            server.put("flavorRef", "0");
+            //server.put("imageRef", "89d601e6-1a32-4ad4-a546-d4d79d4d4156");
+            //server.put("flavorRef", "0");
+            server.put("imageRef", values.getAsString("image_id"));
+            server.put("flavorRef", values.getAsString("flavor_id"));
 
             security_groups.put("name", "default");
             security_groups_Arr.put(security_groups);
