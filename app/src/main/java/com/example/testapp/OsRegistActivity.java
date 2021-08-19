@@ -1,6 +1,7 @@
 package com.example.testapp;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,20 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
     public class NetworkTask extends AsyncTask<Void, Void, String> {
         private ContentValues response;
         private String url = getString(R.string.udt_os_use);
+        private ProgressDialog progressBar;
+
+        @Override
+        protected void onPreExecute() {
+            progressBar = new ProgressDialog(OsRegistActivity.this);
+
+            progressBar.setCancelable(false);
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.setMessage(getString(R.string.create_os_user_msg));
+
+            progressBar.show();
+
+            super.onPreExecute();
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -91,7 +106,7 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
 
                     if (result.equals(HTTP_NO_CONTENT)) {
                         ContentValues os_use_udt = new ContentValues();
-                        os_use_udt.put("email", values.get("email").toString().split("@")[0]);
+                        os_use_udt.put("email", values.get("email").toString());
                         //os_use_udt.put("password", values.get("password").toString());
 
                         httputil.setUrl(url);
@@ -105,13 +120,17 @@ public class OsRegistActivity extends ActivityHelper implements View.OnTouchList
 
         @Override
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+            if (progressBar != null && progressBar.isShowing()) {
+                progressBar.dismiss();
+            }
 
             if (result.equals(HTTP_NO_CONTENT)) {
                 gotoNextActivity(MainActivity.class, values);
             } else {
                 // 에러
             }
+
+            super.onPostExecute(result);
         }
     }
 

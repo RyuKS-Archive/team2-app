@@ -98,6 +98,7 @@ public class ServerListAdapter extends BaseAdapter {
                     instanceOnOff.setChecked(false);
                 }
 
+                /*
                 serverName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -111,6 +112,7 @@ public class ServerListAdapter extends BaseAdapter {
                         mCallback.showUsageStatistics(serverName.getText().toString(), tenantId.getText().toString());
                     }
                 });
+                 */
 
                 instanceOnOff.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
                     @Override

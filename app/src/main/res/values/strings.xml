@@ -64,6 +64,7 @@
     <!--===========================
         MainActivity
     ==============================-->
+    <string name="create_os_user_msg">사용자를 등록하고 있습니다</string>
     <string name="get_auth_token_msg">토큰 정보를 작성하고 있습니다</string>
     <string name="server_list_msg">서버 리스트를 작성하고 있습니다</string>
     <string name="server_init_msg">초기 정보를 작성하고 있습니다</string>

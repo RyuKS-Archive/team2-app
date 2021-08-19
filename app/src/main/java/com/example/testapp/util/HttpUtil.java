@@ -75,13 +75,9 @@ public class HttpUtil {
                 else
                     sbParams.append("&");
 
-                try {
-                    sbParams.append(URLEncoder.encode(key, "UTF-8"));
-                    sbParams.append("=");
-                    sbParams.append(URLEncoder.encode(value, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                sbParams.append(key);
+                sbParams.append("=");
+                sbParams.append(value);
 
             }
         } else {
