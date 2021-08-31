@@ -18,7 +18,6 @@ public class CsUncaughtExceptionHandler implements UncaughtExceptionHandler {
 		try {
 			if (!mCrashing) {
 				mCrashing = true;
-				//LogUtil.e(exception);
 			}
 		} finally {
 			savedUncaughtExceptionHandler.uncaughtException(thread, exception);

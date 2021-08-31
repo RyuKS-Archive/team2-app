@@ -170,19 +170,7 @@ public abstract class ActivityHelper extends FragmentActivity {
         return isEnableNetwork;
     }
 
-    private void createConfirmMsg(final MessageBean bean) {
-        AlertDialog.Builder ab = new AlertDialog.Builder(this);
-        ab.setMessage(bean.getMessage());
-        //ab.setIcon(android.R.drawable.ic_dialog_info);
-        ab.setCancelable(false);
-        if (bean.getListener() != null) {
-            ab.setPositiveButton("확인", bean.getListener());
-            ab.setNegativeButton("취소", bean.getListener());
-        }
-
-        ab.show();
-    }
-
+    /*
     private void createMessageMsg(final MessageBean bean) {
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         ab.setMessage(bean.getMessage());
@@ -201,6 +189,7 @@ public abstract class ActivityHelper extends FragmentActivity {
 
         ab.show();
     }
+     */
 
     private class BackPressCloseController {
         private long backKeyPressedTime = 0;
